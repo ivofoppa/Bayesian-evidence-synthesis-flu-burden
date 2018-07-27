@@ -1,7 +1,7 @@
 library(stats)
 library(RColorBrewer)
 
-bfolder <- "C:/Users/vor1/Dropbox/Misc work/Waning immunity/WI project/"
+bfolder <- "C:/Users/vor1/Dropbox/Misc work/Waning immunity/WI git project/"
 setwd(paste0(bfolder,"WIgraphs"))
 ### Leaky: run leaky code first ('waning 1 strain leaky VE range.R')
 #########################################################################################
@@ -44,20 +44,20 @@ dev.off()
 ### Range of VE
 k <- 1
 VEls <- VEarr[k,]
-cols <- brewer.pal(9, 'Spectral')
-
+#cols <- brewer.pal(3, 'Spectral')
+cols <- c('red','green','blue')
 png(filename = 'Leaky_VEest_range.png')
 selind <- which(casearr[1,] > 0)
 plot(head(times,-1),sapply(1:length(VEls),function(x) ifelse(x %in% selind, VEls[x],NA)),type = 'l',
      ylim = c(min(0,min(VEls)),max(VEarr)*1.3),ylab = 'VE est.',xlab = 'Day',
      main = 'VE Estimates by True VE',lwd = 1,col = cols[1])
 
-for(k in 2:9){
+for(k in 2:3){
   selind <- which(casearr[k,] > 0)
   lines(head(times,-1),sapply(1:length(VEls),function(x) ifelse(x %in% selind, VEarr[k,x],NA)),col = cols[k])
 }
 
-VElabs <- sapply(1:9, function(x) paste0(x*10))
+VElabs <- sapply(VErnge, function(x) paste0(x*100))
 
 legend('top',VElabs,col = cols, title = 'True VE (%)',horiz = T,
        lty = 1,bty = 'n',lwd = 1,seg.len = .5)
