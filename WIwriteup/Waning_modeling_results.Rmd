@@ -1,0 +1,105 @@
+---
+title: "Waning Modeling MEthods and Results"
+author: "Ivo M. Foppa"
+date: "August 13, 2018"
+output: pdf_document
+fig_caption: yes
+header-includes:
+- \usepackage{placeins}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+`r load('workspace.RData')`
+
+## Model and parameters
+We used a simple, unstructured, susceptible-infectious-removed (=SIR) model to simulate the influenza transmission in a large population. The following parameters were chosen:
+
+\begin{table}[ht]
+\centering
+	\begin{tabular}{|c|c|c|}
+	\hline
+		Parameter & Symbol & Value \\
+		\hline
+		Total Pop. & $N$ & $`r formatC(Ntot,format='e',digits=1)`$ \\
+		Beginning vaccination uptake & $p_v$ & $`r vacc0`$\\
+		vaccination uptake rate& $\nu$ & $`r v`$\\
+		Removal rate & $\gamma$ & $`r gamma`$ \\
+		Basic reprod. No. & $R_0$ & $`r r0`$\\
+		Transmission coeff., unvacc. & $\beta = \frac{R_0\;\gamma}{N}$ & $`r r0`$\\
+		Transmission coeff., vacc. & $\beta = \frac{R_0\;\gamma\;(1-\phi)}{N}$ & $`r r0`$\\
+		VE & $\phi$ & $0.2,0.3,0.4,0.5$\\
+		Pre-esisting immunity & $\epsilon$ & $`r epsilon`$ \\
+		\hline
+		
+	\end{tabular}
+\end{table}
+
+The following initial values were used:
+
+\begin{table}[ht]
+\centering
+	\begin{tabular}{|c|c|c|}
+	\hline
+		Parameter & Symbol & Value \\
+		\hline
+		No. susceptible, vacc. & $x_v$ & $`r formatC(xv0,format='e',digits=1)`$ \\
+		No. susceptible, unvacc. & $x_{nv}$ & $`r formatC(xnv0,format='e',digits = 1)`$ \\
+		No. infectious, vacc. & $y_v=\frac{p_v \;\phi}{p_v \;\phi + 1 - \phi}$ & $`r sapply(1:4,function(x) round(VErnge[x]*vacc0/(VErnge[x]*vacc0 + 1- vacc0),digits = 2))`$ \\
+		No. infectious, unvacc. & $y_{nv}$ & $`r round(1 - yv0, digits = 2)`$ \\
+		No. removed, vacc. & $z_v$ & $`r 0`$ \\
+		No. removed, unvacc. & $z_{nv}$ & $`r 0`$ \\
+		\hline
+		
+	\end{tabular}
+\end{table}
+
+The model used is given by the following system or differential equations:
+$$\begin{aligned}
+      \frac{x_v}{dt} &= - \beta\;(1-\phi)\;x_v\;(y_v + y_{nv}) + \nu\;x_{nv}\\
+      \frac{x_{nv}}{dt} &= - \beta\;x_{nv}\;(y_v + y_{nv}) - \nu\;x_{nv} \\
+      \frac{y_v}{dt} &= \beta\;(1-\phi)\;x_v\;(y_v + y_{nv}) - y_v\;\gamma \\
+      \frac{y_{nv}}{dt} &= \beta\;x_{nv}\;(y_v + y_{nv}) - y_{nv}\;\gamma \\
+      \frac{z_v}{dt} &= y_v\;\gamma \\
+      \frac{z_{nv}}{dt} &= y_{nv}\;\gamma 
+\end{aligned}$$
+
+The system is numerical solved using the `r 'ode'` function from the `r 'deSolve'` package. 
+
+## Results
+
+The trajectories are only shown for the periods of time when there was substantial transmission (more than 10 infectious) and aligned at their ``start times''. 
+
+
+```{r,eval=TRUE,echo=FALSE,fig.cap='Expected VE estimates over time, by VE',fig.pos='H'}
+cols <- rainbow(length(VErnge))
+plot(times2, VEarr[[1]],type = 'l', col = cols[1], ylim = c(0,max(VErnge)*1.1), ylab = 'VE est.', xlab = 'Day')
+
+for (k in seq_along(VErnge)){
+  lines(times2, VEarr[[k]],col = cols[k])
+}
+legend('bottomright',c('0.2','0.3','0.4','0.5'), lty = 1, col = cols,bty = 'n' ,title = 'VE')
+```
+
+\clearpage
+```{r,eval=TRUE,fig.pos='ht',echo=FALSE,fig.width=6,fig.height=4}
+
+plot(times2,casearr[[1]],type = 'l', col = cols[1], ylab = 'Incidence', xlab = 'Day')
+
+for (k in seq_along(VErnge)){
+  lines(times2,casearr[[k]],col = cols[k])
+}
+legend('right',c('0.2','0.3','0.4','0.5'), lty = 1, col = cols,bty = 'n' ,title = 'VE')
+```
+
+```{r,eval=TRUE,echo=FALSE,fig.cap='Epi curve (top) and cummulative attack rates (bottom) over time, by VE',fig.pos='ht',fig.width=6,fig.height=4}
+
+plot(times2, cumsum(casearr[[1]])/Ntot,type = 'l', col = cols[1], ylim = c(0,1), ylab = 'Attack rate', xlab = 'Day')
+
+for (k in seq_along(VErnge)){
+  lines(times2, cumsum(casearr[[k]])/Ntot,col = cols[k])
+}
+```
+

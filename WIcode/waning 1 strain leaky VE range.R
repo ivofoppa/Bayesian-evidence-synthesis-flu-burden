@@ -1,6 +1,6 @@
 library(deSolve)
 bfolder <- "C:/Users/vor1/Dropbox/Misc work/Waning immunity/WI git project/"
-setwd(paste0(bfolder,"WIgraphs"))
+setwd(paste0(bfolder,"WIwriteup"))
 
 ## asign values to parameters
 Ntot <- 2000000
@@ -21,7 +21,7 @@ epsilon <- 0 # proportion preexisting immunity
 ###################################################################################################
 seas <- 1500
 
-dt <- 0.01
+dt <- 1
 times <- seq(0, seas, by = dt)
 
 nsims <- length(times) - 1
@@ -99,45 +99,63 @@ for (k in seq_along(VErnge)){
 }
 ###################################################################################################
 ###  Plots ########################################################################################
-###  Trrajectories are selected to start at the beginning of the epidemic   #######################
+###  Trajectories are selected to start at the beginning of the epidemic   ########################
 ###################################################################################################
 selind_list <- list();len_list <- list()
 for (k in seq_along(VErnge)){
-  selind <- which(infarr[[k]]>2)
+  infls <- infarr[[k]]
+  maxtime <- times[which(infls==max(infls))]
+  selind <- which((infls>10 & times < maxtime) | (infls>10 & times > maxtime) )
   selind_list[[k]] <- head(selind,1)
   len_list[[k]] <- length(selind)
 }
 len <- max(sapply(len_list,function(x) x))
 
-times2 <- (1:len)/seas
+times2 <- (1:len)
 
 for (k in seq_along(VErnge)){
 strtind <- selind_list[[k]]
   casearr[[k]] <- casearr[[k]][strtind:(strtind + len - 1)]
   VEarr[[k]] <- VEarr[[k]][strtind:(strtind + len - 1)]
 }
+###################################################################################################
+###  Saving workspace for use in Markdown document ################################################
+###################################################################################################
+save.image(file = 'workspace.RData')
+load('workspace.RData')
+###################################################################################################
+###################################################################################################cols <- rainbow(length(VErnge))
 
 ### Epi curves
 cols <- rainbow(length(VErnge))
 
+pdf('Epicurves.pdf',paper='USr',height = 8.5,width = 11) 
 plot(times2,casearr[[1]],type = 'l', col = cols[1], ylab = 'Incidence', xlab = 'Day')
 
 for (k in seq_along(VErnge)){
   lines(times2,casearr[[k]],col = cols[k])
 }
-legend('right',c('0.2','0.3','0.4','0.5'), lty = 1, col = cols,bty = 'n' )
-###################################################################################################cols <- rainbow(length(VErnge))
+legend('top',c('0.2','0.3','0.4','0.5'), lty = 1, col = cols,bty = 'n' ,title = 'VE')
+dev.off()
+###################################################################################################
 ### VE over time
+pdf('VEtime.pdf',paper='USr',height = 8.5,width = 11) 
 plot(times2, VEarr[[1]],type = 'l', col = cols[1], ylim = c(0,max(VErnge)*1.1), ylab = 'VE est.', xlab = 'Day')
 
 for (k in seq_along(VErnge)){
   lines(times2, VEarr[[k]],col = cols[k])
 }
-
-######################################################################################################################################################################################################cols <- rainbow(length(VErnge))
-plot(times2, cumsum(casearr[[1]])/Ntot,type = 'l', col = cols[1], ylim = c(0,1), ylab = 'Cumm. Cases', xlab = 'Day')
+legend('bottomright',c('0.2','0.3','0.4','0.5'), lty = 1, col = cols,bty = 'n' ,title = 'VE')
+dev.off()
+####################################################################################################
+####################################################################################################
+### Attack rate
+pdf('AR.pdf',paper='USr',height = 8.5,width = 11) 
+plot(times2, cumsum(casearr[[1]])/Ntot,type = 'l', col = cols[1], ylim = c(0,1), ylab = 'Attack rate', xlab = 'Day')
 
 for (k in seq_along(VErnge)){
   lines(times2, cumsum(casearr[[k]])/Ntot,col = cols[k])
 }
+legend('top',c('0.2','0.3','0.4','0.5'), lty = 1, col = cols,bty = 'n' ,title = 'VE')
+dev.off()
 ###################################################################################################
