@@ -66,7 +66,7 @@ $$\begin{aligned}
       \frac{z_{nv}}{dt} &= y_{nv}\;\gamma 
 \end{aligned}$$
 
-The system is numerical solved using the `r 'ode'` function from the `r 'deSolve'` package. 
+The system is numerically solved using the `r 'ode'` function from the `r 'deSolve'` R package. 
 Test-negative design (TND) studies were simulated by keeping track of the incidence of vaccinated and unvaccinated ``cases'', i.e. new *infecteds*. The observed VE was calculated based on the ratio of the vaccination odds in the cases to the vaccination odds in the population.
 
 ## Results
