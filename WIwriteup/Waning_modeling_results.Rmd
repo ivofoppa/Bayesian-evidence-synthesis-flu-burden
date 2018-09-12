@@ -1,7 +1,7 @@
 ---
-title: "Waning Modeling MEthods and Results"
+title: "Waning Modeling Methods and Results"
 author: "Ivo M. Foppa"
-date: "August 17, 2018"
+date: "September 12, 2018"
 output: pdf_document
 fig_caption: yes
 header-includes:
@@ -28,8 +28,8 @@ We used a simple, unstructured, susceptible-infectious-removed (=SIR) model to s
 		vaccination uptake rate& $\nu$ & $`r v`$\\
 		Removal rate & $\gamma$ & $`r gamma`$ \\
 		Basic reprod. No. & $R_0$ & $`r r0`$\\
-		Transmission coeff., unvacc. & $\beta = \frac{R_0\;\gamma}{N}$ & $`r r0`$\\
-		Transmission coeff., vacc. & $\beta = \frac{R_0\;\gamma\;(1-\phi)}{N}$ & $`r r0`$\\
+		Transmission coeff., unvacc. & $\beta = R_0\;\gamma$ & $`r r0*gamma`$\\
+		Transmission coeff., vacc. & $\beta = R_0\;\gamma\;(1-\phi)$ & $`r r0*gamma*(1-phi)`$\\
 		VE & $\phi$ & $0.2,0.3,0.4,0.5$\\
 		Pre-esisting immunity & $\epsilon$ & $`r epsilon`$ \\
 		\hline
@@ -58,16 +58,16 @@ The following initial values were used:
 
 The model used is given by the following system or differential equations:
 $$\begin{aligned}
-      \frac{x_v}{dt} &= - \beta\;(1-\phi)\;x_v\;(y_v + y_{nv}) + \nu\;x_{nv}\\
-      \frac{x_{nv}}{dt} &= - \beta\;x_{nv}\;(y_v + y_{nv}) - \nu\;x_{nv} \\
-      \frac{y_v}{dt} &= \beta\;(1-\phi)\;x_v\;(y_v + y_{nv}) - y_v\;\gamma \\
-      \frac{y_{nv}}{dt} &= \beta\;x_{nv}\;(y_v + y_{nv}) - y_{nv}\;\gamma \\
+      \frac{x_v}{dt} &= - \beta\;(1-\phi)\;x_v\;\frac{y_v + y_{nv}}{N} + \nu\;x_{nv}\\
+      \frac{x_{nv}}{dt} &= - \beta\;x_{nv}\;\frac{y_v + y_{nv}}{N} - \nu\;x_{nv} \\
+      \frac{y_v}{dt} &= \beta\;(1-\phi)\;x_v\;\frac{y_v + y_{nv}}{N} - y_v\;\gamma \\
+      \frac{y_{nv}}{dt} &= \beta\;x_{nv}\; - y_{nv}\;\gamma \\
       \frac{z_v}{dt} &= y_v\;\gamma \\
       \frac{z_{nv}}{dt} &= y_{nv}\;\gamma 
 \end{aligned}$$
 
 The system is numerically solved using the `r 'ode'` function from the `r 'deSolve'` R package. 
-Test-negative design (TND) studies were simulated by keeping track of the incidence of vaccinated and unvaccinated ``cases'', i.e. new *infecteds*. The observed VE was calculated based on the ratio of the vaccination odds in the cases to the vaccination odds in the population.
+Test-negative design (TND) studies are simulated by keeping track of the incidence of vaccinated and unvaccinated ``cases'', i.e. new *infecteds*. The observed VE was calculated based on the ratio of the vaccination odds in the cases to the vaccination odds in the population.
 
 ## Results
 
@@ -75,33 +75,32 @@ The trajectories are only shown for the periods of time when there was substanti
 
 ```{r fig1,eval=TRUE,echo=FALSE,fig.cap='Expected VE estimates over time, by VE. \\label{fig:fig1}',fig.pos='H'}
 cols <- rainbow(length(VErnge))
-plot(times2, VEarr[[1]],type = 'l', col = cols[1], ylim = c(0,max(VErnge)*1.1), ylab = 'VE est.', xlab = 'Day')
+plot((0:maxtime)*dt, VEarr[[1]][timesselList[[1]]],type = 'l', col = cols[1], ylim = c(0,max(VErnge)*1.1), ylab = 'VE est.', xlab = 'Day')
 
 for (k in seq_along(VErnge)){
-  lines(times2, VEarr[[k]],col = cols[k])
+  lines((0:maxtime)*dt, VEarr[[k]][timesselList[[k]]],col = cols[k])
 }
-legend('bottomright',c('20','30','40','50'), lty = 1, col = cols,bty = 'n' ,title = 'VE (%)')
+legend('bottomleft',c('20','30','40','50'), lty = 1, col = cols,bty = 'n' ,title = 'VE (%)')
 ```
 
 As Figure \ref{fig:fig1} shows, the observed VE always declined, The absulute decline was largest with intermediate VE (VE=30%), while the relative decline was most pronounced for low VE (VE=20%)
 
 \clearpage
 ```{r,eval=TRUE,fig.pos='ht',echo=FALSE,fig.width=6,fig.height=4}
-
-plot(times2,casearr[[1]],type = 'l', col = cols[1], ylab = 'Incidence', xlab = 'Day')
+plot((0:maxtime)*dt,casearr[[1]][timesselList[[1]]],type = 'l', col = cols[1], ylab = 'Incidence', xlab = 'Day')
 
 for (k in seq_along(VErnge)){
-  lines(times2,casearr[[k]],col = cols[k])
+  lines((0:maxtime)*dt,casearr[[k]][timesselList[[1]]],col = cols[k])
 }
-legend('center',c('20','30','40','50'), lty = 1, col = cols,bty = 'n' ,title = 'VE (%)')
+legend('top',c('0.2','0.3','0.4','0.5'), lty = 1, col = cols,bty = 'n' ,title = 'VE')
 ```
 
 ```{r fig2,eval=TRUE,echo=FALSE,fig.cap='Epi curve (top) and cummulative attack rates (bottom) over time, by VE.\\label{fig:fig2}',fig.pos='ht',fig.width=6,fig.height=4}
-
-plot(times2, cumsum(casearr[[1]])/Ntot,type = 'l', col = cols[1], ylim = c(0,1), ylab = 'Attack rate', xlab = 'Day')
+plot((0:maxtime)*dt, cumsum(casearr[[1]][timesselList[[1]]])/Ntot,type = 'l', col = cols[1], ylim = c(0,1), ylab = 'Attack rate', xlab = 'Day')
 
 for (k in seq_along(VErnge)){
-  lines(times2, cumsum(casearr[[k]])/Ntot,col = cols[k])
+  lines((0:maxtime)*dt, cumsum(casearr[[k]][timesselList[[k]]])/Ntot,col = cols[k])
 }
+legend('left',c('0.2','0.3','0.4','0.5'), lty = 1, col = cols,bty = 'n' ,title = 'VE')
 ```
 

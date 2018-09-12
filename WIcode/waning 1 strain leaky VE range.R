@@ -15,16 +15,14 @@ Nv0 <- round(Ntot*vacc0)
 Nnv0 <- Ntot - Nv0
 
 gamma <- 1/4
-r0 <- 1.4
+r0 <- 1.6
 beta <- r0*gamma/(Ntot)
 epsilon <- 0 # proportion preexisting immunity
 ###################################################################################################
-seas <- 1500
+seas <- 365
 
-dt <- 1
+dt <- .01
 times <- seq(0, seas, by = dt)
-
-nsims <- length(times) - 1
 ###################################################################################################
 ###################################################################################################
 v <- -log(1 - (vacc1 - vacc0))/seas
@@ -101,60 +99,70 @@ for (k in seq_along(VErnge)){
 ###  Plots ########################################################################################
 ###  Trajectories are selected to start at the beginning of the epidemic   ########################
 ###################################################################################################
-selind_list <- list();len_list <- list()
+crit <- 10*dt
+minsells <- maxsells <- NULL
 for (k in seq_along(VErnge)){
-  infls <- infarr[[k]]
-  maxtime <- times[which(infls==max(infls))]
-  selind <- which((infls>10 & times < maxtime) | (infls>10 & times > maxtime) )
-  selind_list[[k]] <- head(selind,1)
-  len_list[[k]] <- length(selind)
+  infls <- casearr[[k]]
+  minsells <- c(minsells,min(which(infls > crit)))
+  maxsells <- c(maxsells,max(which(infls > crit)))
 }
-len <- max(sapply(len_list,function(x) x))
 
-times2 <- (1:len)
+# for (k in seq_along(VErnge)){
+# 
+#   selind <- unique(c(1:minsells[k],maxsells[k]:length(times)))
+#   casearr[[k]][selind] <- NA
+#   VEarr[[k]][selind] <- NA
+# }
+maxtime <- max(sapply(seq_along(VErnge), function(x) maxsells[x] - minsells[x]))
 
-for (k in seq_along(VErnge)){
-strtind <- selind_list[[k]]
-  casearr[[k]] <- casearr[[k]][strtind:(strtind + len - 1)]
-  VEarr[[k]] <- VEarr[[k]][strtind:(strtind + len - 1)]
-}
+timesselList <- lapply(seq_along(VErnge), function(x) seq(minsells[x],minsells[x] + maxtime))
 ###################################################################################################
 ###  Saving workspace for use in Markdown document ################################################
 ###################################################################################################
-save.image(file = 'workspace.RData')
-load('workspace.RData')
+filepath <- 'C:/Users/VOR1/Documents/Git projects/Waning-Immunity-artefact/WIwriteup/workspace.RData'
+
+save.image(file = filepath)
 ###################################################################################################
 ###################################################################################################cols <- rainbow(length(VErnge))
-
 ### Epi curves
 cols <- rainbow(length(VErnge))
 
 pdf('Epicurves.pdf',paper='USr',height = 8.5,width = 11) 
-plot(times2,casearr[[1]],type = 'l', col = cols[1], ylab = 'Incidence', xlab = 'Day')
+plot((0:maxtime)*dt,casearr[[1]][timesselList[[1]]],type = 'l', col = cols[1], ylab = 'Incidence', xlab = 'Day')
 
 for (k in seq_along(VErnge)){
-  lines(times2,casearr[[k]],col = cols[k])
+  lines((0:maxtime)*dt,casearr[[k]][timesselList[[1]]],col = cols[k])
 }
 legend('top',c('0.2','0.3','0.4','0.5'), lty = 1, col = cols,bty = 'n' ,title = 'VE')
 dev.off()
 ###################################################################################################
 ### VE over time
 pdf('VEtime.pdf',paper='USr',height = 8.5,width = 11) 
-plot(times2, VEarr[[1]],type = 'l', col = cols[1], ylim = c(0,max(VErnge)*1.1), ylab = 'VE est.', xlab = 'Day')
+plot((0:maxtime)*dt, VEarr[[1]][timesselList[[1]]],type = 'l', col = cols[1], ylim = c(0,max(VErnge)*1.1), ylab = 'VE est.', xlab = 'Day')
 
 for (k in seq_along(VErnge)){
-  lines(times2, VEarr[[k]],col = cols[k])
+  lines((0:maxtime)*dt, VEarr[[k]][timesselList[[k]]],col = cols[k])
 }
 legend('bottomright',c('0.2','0.3','0.4','0.5'), lty = 1, col = cols,bty = 'n' ,title = 'VE')
 dev.off()
 ####################################################################################################
 ####################################################################################################
-### Attack rate
-pdf('AR.pdf',paper='USr',height = 8.5,width = 11) 
-plot(times2, cumsum(casearr[[1]])/Ntot,type = 'l', col = cols[1], ylim = c(0,1), ylab = 'Attack rate', xlab = 'Day')
+### VE bias over time
+
+plot((0:maxtime)*dt, (VEarr[[1]][timesselList[[1]]] - VErnge[1])/VErnge[1],type = 'l', col = cols[1], ylab = 'VE est.', xlab = 'Day')
 
 for (k in seq_along(VErnge)){
-  lines(times2, cumsum(casearr[[k]])/Ntot,col = cols[k])
+  lines((0:maxtime)*dt, (VEarr[[k]][timesselList[[k]]] - VErnge[k])/VErnge[k],col = cols[k])
+}
+legend('left',c('0.2','0.3','0.4','0.5'), lty = 1, col = cols,bty = 'n' ,title = 'VE')
+####################################################################################################
+####################################################################################################
+### Attack rate
+pdf('AR.pdf',paper='USr',height = 8.5,width = 11) 
+plot((0:maxtime)*dt, cumsum(casearr[[1]][timesselList[[1]]])/Ntot,type = 'l', col = cols[1], ylim = c(0,1), ylab = 'Attack rate', xlab = 'Day')
+
+for (k in seq_along(VErnge)){
+  lines((0:maxtime)*dt, cumsum(casearr[[k]][timesselList[[k]]])/Ntot,col = cols[k])
 }
 legend('top',c('0.2','0.3','0.4','0.5'), lty = 1, col = cols,bty = 'n' ,title = 'VE')
 dev.off()
