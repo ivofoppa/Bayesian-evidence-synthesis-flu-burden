@@ -133,7 +133,7 @@ plot((0:maxtime)*dt,casearr[[1]][timesselList[[1]]],type = 'l', col = cols[1], y
 for (k in seq_along(VErnge)){
   lines((0:maxtime)*dt,casearr[[k]][timesselList[[1]]],col = cols[k])
 }
-legend('top',c('0.2','0.3','0.4','0.5'), lty = 1, col = cols,bty = 'n' ,title = 'VE')
+legend('right',c('0.2','0.3','0.4','0.5'), lty = 1, col = cols,bty = 'n' ,title = 'VE')
 dev.off()
 ###################################################################################################
 ### VE over time
@@ -147,9 +147,26 @@ legend('bottomright',c('0.2','0.3','0.4','0.5'), lty = 1, col = cols,bty = 'n' ,
 dev.off()
 ####################################################################################################
 ####################################################################################################
-### VE bias over time
+### Abs. VE bias over time
 
-plot((0:maxtime)*dt, (VEarr[[1]][timesselList[[1]]] - VErnge[1])/VErnge[1],type = 'l', col = cols[1], ylab = 'VE est.', xlab = 'Day')
+miny <- min((VEarr[[1]][timesselList[[1]]] - VErnge[1]),na.rm = T)
+maxy <- max((VEarr[[1]][timesselList[[1]]] - VErnge[1]),na.rm = T)
+
+plot((0:maxtime)*dt, (VEarr[[1]][timesselList[[1]]] - VErnge[1]),type = 'l', col = cols[1], ylab = 'VE est.', xlab = 'Day',yaxt = 'n',ylim = c(-.22,0))
+axis(2,c(-.2,-.15,-.10,-.05,0),labels = c(-20,-15,-10,-5,0))
+
+for (k in seq_along(VErnge)){
+  lines((0:maxtime)*dt, (VEarr[[k]][timesselList[[k]]] - VErnge[k]),col = cols[k])
+}
+legend('left',c('0.2','0.3','0.4','0.5'), lty = 1, col = cols,bty = 'n' ,title = 'VE')
+####################################################################################################
+####################################################################################################
+### Rel. VE bias over time
+
+miny <- min((VEarr[[1]][timesselList[[1]]] - VErnge[1])/VErnge[1],na.rm = T)
+
+plot((0:maxtime)*dt, (VEarr[[1]][timesselList[[1]]] - VErnge[1])/VErnge[1],type = 'l', col = cols[1], ylab = 'VE est.', xlab = 'Day',yaxt = 'n')
+axis(2,c(-.75,-.5,-.25,0),labels = c(-75,-50,-25,0))
 
 for (k in seq_along(VErnge)){
   lines((0:maxtime)*dt, (VEarr[[k]][timesselList[[k]]] - VErnge[k])/VErnge[k],col = cols[k])
