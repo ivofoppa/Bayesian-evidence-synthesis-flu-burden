@@ -19,24 +19,27 @@ pSE <- function(r0,I,phi,vacc){ ## infection probability
 
 seas <- 150 ## Number of days in epidemic
 ### Generating the vaccination rate over time
-vacc <- .4
+vacc <- .5
 
-campdur <- 50
-vrate <- -log(1 - vacc)/campdur
+vdur <- 90 ### duration of vaccination
+prevdur <- 50 ## vaccination before transmission
 
-v <- c(.10,rep(vrate,campdur),rep(0,seas - 51))
+vrate <- -log(1 - vacc)/vdur
+
+v <- c(rep(vrate,vdur),rep(0,seas - vdur))
 vaccdelim <- c(seq(1,60,12),seas)
 nvaccat <- length(vaccdelim) ## number of time-since-vacc categories
-
+###################################################################################################
+###################################################################################################
 Envinit <- 10
 Invinit <- 0
 Snvinit <- Ntot - Envinit - Invinit
 Rnvinit <- 0
 
-Evinit <- rep(0,seas)
-Ivinit <- rep(0,seas)
-Svinit <- rep(0,seas)
-Rvinit <- rep(0,seas)
+Evinit <- rep(0,seas + prevdur)
+Ivinit <- rep(0,seas + prevdur)
+Svinit <- rep(0,seas + prevdur)
+Rvinit <- rep(0,seas + prevdur)
 
 inits <- list(Svinit=Svinit,Snvinit=Snvinit,Evinit=Evinit,Envinit=Envinit,
               Ivinit=Ivinit,Invinit=Invinit,Rvinit=Rvinit,Rnvinit=Rnvinit)
