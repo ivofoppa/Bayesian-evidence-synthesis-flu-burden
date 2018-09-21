@@ -1,0 +1,101 @@
+\documentclass{article}[11pt]
+\usepackage{amsmath,amssymb,authblk,bm,bm,caption,graphicx,hyperref,lscape,mathrsfs,setspace,subcaption,tabularx,tkz-graph,upgreek,url}
+\usetikzlibrary{shapes.geometric}
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage[backend=biber,style=numeric,isbn=false,sorting=none,giveninits=true,terseinits=true]{biblatex}
+\DeclareNameAlias{default}{last-first}
+\doublespacing
+\graphicspath{{graphics/}}
+\newcommand{\tablefolder}{./TCtables}
+\newcommand{\la}{\leftarrow}
+\newcommand{\ra}{\rightarrow}
+%\usepackage{draftwatermark}
+\newcommand{\footremember}[2]{%
+	\footnote{#2}
+	\newcounter{#1}
+	\setcounter{#1}{\value{footnote}}
+}
+\newcommand{\footrecall}[1]{%
+	\footnotemark[\value{#1}]%
+}
+
+\newcommand{\absdiv}[1]{%
+	\par\addvspace{.5\baselineskip}% adjust to suit
+	\noindent\textbf{#1}\quad\ignorespaces
+}
+
+\renewcommand*{\revsdnamepunct}{}
+
+\makeatletter
+\renewbibmacro*{name:last-first}[4]{%
+	\ifuseprefix
+	{\usebibmacro{name:delim}{#3#1}%
+		\usebibmacro{name:hook}{#3#1}%
+		\ifblank{#3}{}{%
+			\ifcapital
+			{\mkbibnameprefix{\MakeCapital{#3}}\isdot}
+			{\mkbibnameprefix{#3}\isdot}%
+			\ifpunctmark{'}{}{\bibnamedelimc}}%
+		\mkbibnamelast{#1}\isdot
+		\ifblank{#4}{}{\bibnamedelimd\mkbibnameaffix{#4}\isdot}%
+		%      \ifblank{#2}{}{\addcomma\bibnamedelimd\mkbibnamefirst{#2}\isdot}}% DELETED
+		\ifblank{#2}{}{\bibnamedelimd\mkbibnamefirst{#2}\isdot}}% NEW
+	{\usebibmacro{name:delim}{#1}%
+		\usebibmacro{name:hook}{#1}%
+		\mkbibnamelast{#1}\isdot
+		\ifblank{#4}{}{\bibnamedelimd\mkbibnameaffix{#4}\isdot}%
+		%      \ifblank{#2#3}{}{\addcomma}% DELETED
+		\ifblank{#2}{}{\bibnamedelimd\mkbibnamefirst{#2}\isdot}%
+		\ifblank{#3}{}{\bibnamedelimd\mkbibnameprefix{#3}\isdot}}}
+\makeatother
+
+
+%\SetWatermarkText{Confidential}
+%\SetWatermarkScale{5}
+% Sets the default location of pictures\fvset{fontsize=\normalsize} % The font size of all verbatim text can be changed here
+%
+\DeclareMathOperator{\logit}{logit}
+\DeclareMathOperator{\RR}{RR}
+\DeclareMathOperator{\OR}{OR}
+\DeclareMathOperator{\E}{E}
+%
+\addbibresource{waning.bib}
+\title{Appearance of Waning Immunity in Studies of Influenza Vaccine Effectiveness due to Bias} 
+%
+\author[1,2,*]{Ivo M Foppa}
+	%
+\author[2]{Jill Ferdinands} 
+\affil[1]{Battelle Memorial Institute, Atlanta, Georgia, USA}
+\affil[2]{Influenza Division, Centers for Disease Control and Prevention, 1600 Clifton Road NE, Atlanta, 30333 Georgia, USA}
+\affil[*]{Corresponding Author, Influenza Division, Centers for Disease Control and Prevention, 1600 Clifton Road NE, MS A-20, Atlanta, 30333 Georgia, USA, \nolinkurl{vor1@cdc.gov}}
+\date{}
+%
+%----------------------------------------------------------------------------------------
+\begin{document}
+	
+\maketitle%
+%
+\clearpage
+%
+\clearpage
+%
+\begin{abstract}
+\ldots
+\end{abstract}
+\clearpage
+%
+%
+\clearpage
+\section*{Introduction} 
+In his enlightening editorial on challenges observational vaccine effectiveness (VE) studies face, \textcite{Lipsitch2018challenges} uses the paper by Ray et al. \cite{Ray2018Intra-season} to highlight some of these challenges. 
+%
+\section*{Acknowledgements}
+\ldots
+\clearpage
+%
+\printbibliography
+%
+%
+%
+\end{document} 
+
