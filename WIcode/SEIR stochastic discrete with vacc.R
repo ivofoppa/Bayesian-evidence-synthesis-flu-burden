@@ -17,18 +17,18 @@ pSE <- function(r0,I,phi,vacc){ ## infection probability
   return (as.numeric(1-exp(-lambda)))
 }
 
-seas <- 150 ## Number of days in epidemic
+seas <- 500 ## Number of days in epidemic
 ### Generating the vaccination rate over time
 vacc <- .5
 
-vdur <- 50 ### duration of vaccination
-prevdur <- 50 ## vaccination before transmission
+prevdur <- 60 ## vaccination before transmission
+vdur <- prevdur + 200 ### duration of vaccination
 
 vrate <- -log(1 - vacc)/vdur
 
 v <- c(rep(vrate,vdur),rep(0,seas - vdur))
 vaccdelim <- c(seq(1,60,12),seas + prevdur)
-nvaccat <- length(vaccdelim) ## number of time-since-vacc categories
+nvaccat <- length(vaccdelim) - 1 ## number of time-since-vacc categories
 ###################################################################################################
 ###################################################################################################
 Invinit <- 0
@@ -63,28 +63,29 @@ while (time <= prevdur){
   ###################################################################################################
   ### Vaccination
   Sv <- shift(Sv,1)
-  newvacc <- rbinom(1,Snv - sum(Sv),1 - exp(-v[time]))
+  newvacc <- rbinom(1,Snv,1 - exp(-v[time]))
   Sv[1] <- newvacc; Snv <- Snv - newvacc
   
   time <- time + 1
 }
 
-studydata <- array(0,dim = c(seas,nvaccat + nvaccat + 1))
+studydata <- array(0,dim = c(seas,1 + 2 * nvaccat + 2))
 
 infnum <- 100
 
 pinfnv <-  Snv/(Snv + (1 - phi)*sum(Sv))  ### probability that infections are non-vaccinated
 infnv <- rbinom(1,infnum,pinfnv)
-Env <- infnv
+Env <- Env + infnv
 
 infv <- infnum - infnv
-Ev <- c(rmultinom(1,infv,pSv))
+pSv <- Sv/max(sum(Sv),1)
+Ev <- Ev + c(rmultinom(1,infv,pSv))
 
 I <- sum(c(Iv,Inv))
 
-Snvls <- Svls <- Envls <- Evls <- Invls <- Ivls <- Rnvls <- Rvls <- NULL
+Ils <- NULL
 
-while (time <= seas){
+while (time <= seas + prevdur){
   pnvinf <- pSE(r0,I,phi,0)
   pvinf <- pSE(r0,I,phi,1)
   
@@ -96,7 +97,8 @@ while (time <= seas){
   
   newremnv <- rbinom(1,Inv,1 - exp(-delta))
   newremv <- sapply(Iv, function(iv) rbinom(1,iv, 1 - exp(-delta)))
-  
+
+  Ils <- c(Ils,sum(newinfv) + newinfnv)  
   Snv <- Snv - newlatnv
   Sv <- Sv - newlatv
   
@@ -111,20 +113,22 @@ while (time <= seas){
   Rnv <- Rnv + newremnv
   Rv <- Rv + newremv
   
-  Invls <- c(Invls,Inv)
-  Ivls <- c(Ivls,sum(Iv))
   ###################################################################################################
   ### "Study" is conducted ##########################################################################
   ###################################################################################################
-  casesvls <- sapply(seq_along(vaccdelim[-1]), function(x) sum(newinfv[vaccdelim[x] : vaccdelim[x + 1]]))
+  casesls <- c(newinfnv,sapply(seq_along(vaccdelim[-1]), function(x) sum(newinfv[vaccdelim[x] : vaccdelim[x + 1]])))
   
   controlsvsum <- Sv + Ev + Rv
-  controlsvls <- sapply(seq_along(vaccdelim[-1]), function(x) sum(controlsvsum[vaccdelim[x] : vaccdelim[x + 1]]))
+  controlsls <- c(Snv + Env + Rnv,sapply(seq_along(vaccdelim[-1]), function(x) sum(controlsvsum[vaccdelim[x] : vaccdelim[x + 1]])))
   
-  studydata[time - prevdur,] <- c(time - prevdur,casesvls,newinfnv,controlsvls, Snv + Env + Rnv)
+  studydata[time - prevdur,] <- c(time - prevdur,casesls,controlsls)
   ###################################################################################################
+  ### Stop when no more transmission 
+  if (I==0 & sum(c(Env + Ev)) == 0){
+    break()
+  }
   ###################################################################################################
-  ### Vaccination
+  ### Vaccination: proceeding time since vacc. and adding new vaccinees
   Sv <- shift(Sv,1)
   svacc <- rbinom(1,Snv,1 - exp(-v[time]))
   Sv[1] <- svacc; Snv <- Snv - svacc
@@ -133,16 +137,26 @@ while (time <= seas){
   evacc <- rbinom(1,Env,1 - exp(-v[time]))
   Ev[1] <- evacc; Env <- Env - evacc
   
-  Iv <- shift(Iv,1)
-  ivacc <- rbinom(1,Inv,1 - exp(-v[time]))
-  Iv[1] <- ivacc; Inv <- Inv - ivacc
+  Iv <- shift(Iv,1) ### Infectious not vaccinated, by assumption
+  # ivacc <- rbinom(1,Inv,1 - exp(-v[time]))
+  # Iv[1] <- ivacc; Inv <- Inv - ivacc
+  # 
+  Rv <- shift(Rv,1)
+  rvacc <- rbinom(1,Rnv,1 - exp(-v[time]))
+  Rv[1] <- rvacc; Rnv <- Rnv - rvacc
   
   time <- time + 1
 }
+
+delind <- which(rowSums(studydata[,2:13])==0)
+
+studydata <- studydata[-delind,]
+
+seas2 <- head(delind,1) - 1
 ### Reorganizing data set for analysis--only vaccinated
 dataset <- NULL
 
-for (t in 1:seas){
+for (t in 1:seas2){
   totcases <- sum(studydata[t,2:7])
   totnoncases <- sum(studydata[t,8:13])
   oddscontrol <- totcases/totnoncases * ccratio
@@ -154,7 +168,8 @@ for (t in 1:seas){
     ncases <- studydata[t,1 + k]
     nnoncases <- studydata[t,7 + k]
     
-    ncontrols <- rbinom(1,nnoncases,pcontrol)
+    # ncontrols <- rbinom(1,nnoncases,pcontrol)
+    ncontrols <- nnoncases
     if (ncases > 0 & ncontrols > 0){
       datarec <- c(t,k,1,ncases)
       dataset <- rbind(dataset,datarec,deparse.level = 0)
@@ -172,7 +187,10 @@ dataset$sincevacc <- factor(dataset$sincevacc)
 # dataset <- dataset[-delind,]
 
 cond_logist <- clogit(case ~ sincevacc + strata(time),weights = count, data = dataset,method = 'approximate')
-# summary(cond_logist)
+summary(cond_logist)
 
+logist <- glm(case ~ sincevacc ,weights = count, data = dataset,family = binomial(link = 'logit'))
+summary(logist)
 ######################################################################################################
 ######################################################################################################
+plot(Ils)

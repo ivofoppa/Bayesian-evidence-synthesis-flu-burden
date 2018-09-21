@@ -1,0 +1,111 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 2.8 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \sortlist[entry]{none/global/}
+    \entry{Lipsitch2018challenges}{article}{}
+      \name{author}{1}{}{%
+        {{hash=8bc65f1cfc6fa7966fea59b3a7d5382d}{%
+           family={Lipsitch},
+           familyi={L\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{8bc65f1cfc6fa7966fea59b3a7d5382d}
+      \strng{fullhash}{8bc65f1cfc6fa7966fea59b3a7d5382d}
+      \strng{authornamehash}{8bc65f1cfc6fa7966fea59b3a7d5382d}
+      \strng{authorfullhash}{8bc65f1cfc6fa7966fea59b3a7d5382d}
+      \field{sortinit}{1}
+      \field{sortinithash}{27a2bc5dfb9ed0a0422134d636544b5d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{1537-6591 (Electronic) 1058-4838 (Linking)}
+      \field{journaltitle}{Clin Infect Dis}
+      \field{title}{Challenges of vaccine effectiveness and waning studies}
+      \field{type}{Journal Article}
+      \field{year}{2018}
+      \verb{doi}
+      \verb 10.1093/cid/ciy773
+      \endverb
+      \verb{url}
+      \verb https://www.ncbi.nlm.nih.gov/pubmed/30204853
+      \endverb
+    \endentry
+    \entry{Ray2018Intra-season}{article}{}
+      \name{author}{7}{}{%
+        {{hash=984da330be3f858e83e26827ac714254}{%
+           family={Ray},
+           familyi={R\bibinitperiod},
+           given={G.\bibnamedelimi T.},
+           giveni={G\bibinitperiod\bibinitdelim T\bibinitperiod}}}%
+        {{hash=b6101d3faf317015af8f752cce04ced6}{%
+           family={Lewis},
+           familyi={L\bibinitperiod},
+           given={N.},
+           giveni={N\bibinitperiod}}}%
+        {{hash=1e5e3ed799414fc6926a285cbaac4d35}{%
+           family={Klein},
+           familyi={K\bibinitperiod},
+           given={N.\bibnamedelimi P.},
+           giveni={N\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
+        {{hash=ca78a489f6f0811bd6a2f7a030faa40d}{%
+           family={Daley},
+           familyi={D\bibinitperiod},
+           given={M.\bibnamedelimi F.},
+           giveni={M\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+        {{hash=d75ad4ff75798353e02b3edabc191cc7}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={S.\bibnamedelimi V.},
+           giveni={S\bibinitperiod\bibinitdelim V\bibinitperiod}}}%
+        {{hash=f16ec5652f16857b9e28ffafc8063822}{%
+           family={Kulldorff},
+           familyi={K\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=75756ef56f9f8733e38b97835c1cff05}{%
+           family={Fireman},
+           familyi={F\bibinitperiod},
+           given={B.},
+           giveni={B\bibinitperiod}}}%
+      }
+      \strng{namehash}{e9e53c467842c4651055e06e38325d55}
+      \strng{fullhash}{c4852eebf9cf328de599518123bbf486}
+      \strng{authornamehash}{e9e53c467842c4651055e06e38325d55}
+      \strng{authorfullhash}{c4852eebf9cf328de599518123bbf486}
+      \field{sortinit}{3}
+      \field{sortinithash}{197da6d6c34c6b20ce45c4d4baace5a4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{1537-6591 (Electronic) 1058-4838 (Linking)}
+      \field{journaltitle}{Clin Infect Dis}
+      \field{title}{Intra-season Waning of Influenza Vaccine Effectiveness}
+      \field{type}{Journal Article}
+      \field{year}{2018}
+      \verb{doi}
+      \verb 10.1093/cid/ciy770
+      \endverb
+      \verb{url}
+      \verb https://www.ncbi.nlm.nih.gov/pubmed/30204855
+      \endverb
+    \endentry
+  \endsortlist
+\endrefsection
+\endinput
+
