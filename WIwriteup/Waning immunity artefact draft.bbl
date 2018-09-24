@@ -47,6 +47,90 @@
       \verb https://www.ncbi.nlm.nih.gov/pubmed/30204853
       \endverb
     \endentry
+    \entry{Margheri2017heterogeneity}{article}{}
+      \name{author}{3}{}{%
+        {{hash=f1c15a2c10e8d2529f98a8290d1fe021}{%
+           family={Margheri},
+           familyi={M\bibinitperiod},
+           given={Alessandro},
+           giveni={A\bibinitperiod}}}%
+        {{hash=902f7e2d6fe5fecf288e5f35321d709c}{%
+           family={Rebelo},
+           familyi={R\bibinitperiod},
+           given={Carlota},
+           giveni={C\bibinitperiod}}}%
+        {{hash=50ea4dbacd1e9302c18be67d374cfd5d}{%
+           family={Gomes},
+           familyi={G\bibinitperiod},
+           given={M\bibnamedelima Gabriela\bibnamedelima M},
+           giveni={M\bibinitperiod\bibinitdelim G\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Taylor \& Francis}%
+      }
+      \strng{namehash}{a39d0bbd8a6d6d145fa174f5adc4e4d6}
+      \strng{fullhash}{a39d0bbd8a6d6d145fa174f5adc4e4d6}
+      \strng{authornamehash}{a39d0bbd8a6d6d145fa174f5adc4e4d6}
+      \strng{authorfullhash}{a39d0bbd8a6d6d145fa174f5adc4e4d6}
+      \field{sortinit}{3}
+      \field{sortinithash}{197da6d6c34c6b20ce45c4d4baace5a4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Dynamical Systems}
+      \field{number}{1}
+      \field{title}{Heterogeneity in disease risk induces falling vaccine protection with rising disease incidence}
+      \field{volume}{32}
+      \field{year}{2017}
+      \field{pages}{148\bibrangedash 163}
+      \range{pages}{16}
+    \endentry
+    \entry{Wu2018influence}{article}{}
+      \name{author}{4}{}{%
+        {{hash=57cfccefdf02c4242604fbd44d33d9e1}{%
+           family={Wu},
+           familyi={W\bibinitperiod},
+           given={Y.},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=42b20f34177332b0d5ab790d972ee266}{%
+           family={Marsh},
+           familyi={M\bibinitperiod},
+           given={J.\bibnamedelimi A.},
+           giveni={J\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=69c005f072d7a26cbe77115c654c0b34}{%
+           family={McBryde},
+           familyi={M\bibinitperiod},
+           given={E.\bibnamedelimi S.},
+           giveni={E\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=6f98c0a229617cbb1427baf2ebdd0618}{%
+           family={Snelling},
+           familyi={S\bibinitperiod},
+           given={T.\bibnamedelimi L.},
+           giveni={T\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+      }
+      \strng{namehash}{50efe4799c8c70dff1913f8d05759401}
+      \strng{fullhash}{bb6c75890745c90145b560044a7097d1}
+      \strng{authornamehash}{50efe4799c8c70dff1913f8d05759401}
+      \strng{authorfullhash}{bb6c75890745c90145b560044a7097d1}
+      \field{sortinit}{4}
+      \field{sortinithash}{d221becdd544034cf9082056cd6e6d2d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{1873-2518 (Electronic) 0264-410X (Linking)}
+      \field{journaltitle}{Vaccine}
+      \field{number}{21}
+      \field{title}{The influence of incomplete case ascertainment on measures of vaccine efficacy}
+      \field{type}{Journal Article}
+      \field{volume}{36}
+      \field{year}{2018}
+      \field{pages}{2946\bibrangedash 2952}
+      \range{pages}{7}
+      \verb{doi}
+      \verb 10.1016/j.vaccine.2018.04.046
+      \endverb
+      \verb{url}
+      \verb https://www.ncbi.nlm.nih.gov/pubmed/29699788
+      \endverb
+    \endentry
     \entry{Ray2018Intra-season}{article}{}
       \name{author}{7}{}{%
         {{hash=984da330be3f858e83e26827ac714254}{%
@@ -89,8 +173,8 @@
       \strng{fullhash}{c4852eebf9cf328de599518123bbf486}
       \strng{authornamehash}{e9e53c467842c4651055e06e38325d55}
       \strng{authorfullhash}{c4852eebf9cf328de599518123bbf486}
-      \field{sortinit}{3}
-      \field{sortinithash}{197da6d6c34c6b20ce45c4d4baace5a4}
+      \field{sortinit}{6}
+      \field{sortinithash}{02bbed3ed82f61ae046619460488516d}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{1537-6591 (Electronic) 1058-4838 (Linking)}

@@ -5,7 +5,7 @@ library(binhf)
 library(survival)
 Ntot <- 2000000
 ## Creating population according to latent (rows) and infectious periods (columns) in each of the age groups
-r0 <- 1.5
+r0 <- 1.8
 gamma <- 1/2 ## latent period
 delta <- 1/4 ## infectious period
 beta <- r0 * delta
@@ -22,12 +22,12 @@ seas <- 500 ## Number of days in epidemic
 vacc <- .5
 
 prevdur <- 60 ## vaccination before transmission
-vdur <- prevdur + 200 ### duration of vaccination
+vdur <- prevdur + 150 ### duration of vaccination
 
 vrate <- -log(1 - vacc)/vdur
 
 v <- c(rep(vrate,vdur),rep(0,seas - vdur))
-vaccdelim <- c(seq(1,60,12),seas + prevdur)
+vaccdelim <- c(seq(1,vdur,round(vdur/5)),seas + prevdur)
 nvaccat <- length(vaccdelim) - 1 ## number of time-since-vacc categories
 ###################################################################################################
 ###################################################################################################
@@ -148,7 +148,7 @@ while (time <= seas + prevdur){
   time <- time + 1
 }
 
-delind <- which(rowSums(studydata[,2:13])==0)
+delind <- which(rowSums(studydata)==0 | any(is.na(studydata)))
 
 studydata <- studydata[-delind,]
 
@@ -162,15 +162,13 @@ for (t in 1:seas2){
   oddscontrol <- totcases/totnoncases * ccratio
   pcontrol <- oddscontrol * totnoncases/Ntot 
   
-  if (t > 10 & totcases == 0) break()
-  
   for (k in seq_along(vaccdelim[-1])){
-    ncases <- studydata[t,1 + k]
-    nnoncases <- studydata[t,7 + k]
+    ncases <- studydata[t,2 + k]
+    nnoncases <- studydata[t,8 + k]
     
-    # ncontrols <- rbinom(1,nnoncases,pcontrol)
-    ncontrols <- nnoncases
-    if (ncases > 0 & ncontrols > 0){
+    ncontrols <- rbinom(1,nnoncases,pcontrol)
+    # ncontrols <- nnoncases
+    if ((ncases > 0 & ncontrols > 0) & (!is.na(ncases) & !is.na(ncontrols))){
       datarec <- c(t,k,1,ncases)
       dataset <- rbind(dataset,datarec,deparse.level = 0)
       datarec <- c(t,k,0,ncontrols)

@@ -2122,7 +2122,10 @@
   <bcf:section number="0">
     <bcf:citekey order="1">Lipsitch2018challenges</bcf:citekey>
     <bcf:citekey order="2">Lipsitch2018challenges</bcf:citekey>
-    <bcf:citekey order="3">Ray2018Intra-season</bcf:citekey>
+    <bcf:citekey order="3">Margheri2017heterogeneity</bcf:citekey>
+    <bcf:citekey order="4">Wu2018influence</bcf:citekey>
+    <bcf:citekey order="5">Lipsitch2018challenges</bcf:citekey>
+    <bcf:citekey order="6">Ray2018Intra-season</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" name="none/global/" type="entry" sortscheme="none" sortnamekeyscheme="global" labelprefix="">
   <bcf:sorting>
