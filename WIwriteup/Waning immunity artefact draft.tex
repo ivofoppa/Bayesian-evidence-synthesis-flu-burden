@@ -1,5 +1,5 @@
 \documentclass{article}[11pt]
-\usepackage{amsmath,amssymb,authblk,bm,bm,caption,graphicx,hyperref,lscape,mathrsfs,setspace,subcaption,tabularx,tkz-graph,upgreek,url}
+\usepackage{amsmath,amssymb,authblk,bm,bm,caption,graphicx,hyperref,lscape,mathrsfs,setspace,subcaption,tabularx,tkz-graph,upgreek,url,amsthm}
 \usetikzlibrary{shapes.geometric}
 \usepackage[a4paper, margin=2.5cm]{geometry}
 \usepackage[backend=biber,style=numeric,isbn=false,sorting=none,giveninits=true,terseinits=true]{biblatex}
@@ -87,11 +87,49 @@
 %
 \clearpage
 \section*{Introduction} 
-In his enlightening editorial on the challenges faced by observational vaccine effectiveness (VE) studies, \textcite{Lipsitch2018challenges} spells out two mechanisms causing apparent waning in ``leaky'' vaccines: First, heterogeneous risk of infection will deplete the population of those with higher risk first, among the vaccinated slower than the unvaccinated \cite{Margheri2017heterogeneity}.  This leads to relative increase in vaccinated case, resulting in lower VE estimates over time.  The second mechanism, due to incomplete case ascertainment \cite{Wu2018influence}, is not further discussed by \citeauthor{Lipsitch2018challenges}. Here, we reconsider that mechanism in the context of observational influenza VE studies. Presently, most influenza VE studies are test-negative studies (TNS) 
+In his enlightening editorial on the challenges faced by observational vaccine effectiveness (VE) studies, \textcite{Lipsitch2018challenges} spells out two mechanisms causing apparent waning in ``leaky'' vaccines: First, heterogeneous risk of infection will deplete the population of those with higher risk first, among the vaccinated slower than the unvaccinated \cite{Margheri2017heterogeneity}.  This leads to relative increase in vaccinated case, resulting in lower VE estimates over time.  The second mechanism, due to incomplete case ascertainment \cite{Wu2018influence}, is not further discussed by \citeauthor{Lipsitch2018challenges}. Here, we reconsider that mechanism in the context of observational influenza VE studies. Presently, most influenza VE studies are test-negative studies (TNS) and investigate its impact on VE estimates. We also comment on the recent manuscript by Ray et al. \cite{Ray2018Intra-season} to highlight some of these challenges. 
+%
+\section*{Notation and theoretical considerations}
+Assume that, for the sake of the argument, we conduct a TNS for the assessment of influenza VE, with full ascertainment of all influenza infections, both symptomatic and asymptomatic. Using the notation of \textcite{Wu2018influence}, $\beta \in [0,1]$ is the probability of an otherwise, i.e. when unvaccinated, infectious contact to result in infection. Further assume that all previous infections in the given season can be identified, e.g. serologically, and that pre-existing immunity does not differ by immunity and that vaccination is only administered before the start of seasonal influenza transmission. VE can then be estimated as
+%
+\begin{equation}
+\label{eq:VE_estimate}
+1- \hat{\beta}(\tau) = 1 - \frac{c_{11}(\tau) \; c_{00}(\tau)}{c_{10}(\tau)\; c_{01}(\tau)},
+\end{equation}
+%
+where $c_{11}(\tau)$ and $c_{10}(\tau)$ represent the cumulative vaccinated and unvaccinated cases, i.e. influenza infections, up to day $\tau$ and $c_{01}$ and $c_{00}$ represent vaccinated and unvaccinated controls, respectively. Let controls be all subjects infected with a non-influenza respiratory virus which is unaffected by influenza vaccination, and $\lambda_I(t)$ is the incidence rate of influenza infection in the unvaccinated on day $t$ and $\lambda_{nI}(t)$ is the incidence rates of other respiratory viral infections and $\Lambda_I(t) = \int_{u=0}^{t} \lambda_I(t) dt$; $N$ is the total population and $\nu$ is vaccination uptake in that population.
+If influenza infection is stochastically independent of alternate respiratory virus infections, then 
+\begin{equation}
+\label{eq:unbiased}
+\E(\hat{\beta}) = \beta,
+\end{equation}
+%
+i.e. \eqref{eq:VE_estimate} is an unbiased estimator of VE because, using the basic rules of algebra, expectations and integration,
+%
 
-If, hypothetically, 
-
-uses the paper by Ray et al. \cite{Ray2018Intra-season} to highlight some of these challenges. 
+\begin{proof}
+	\begin{align}
+\E(1- \hat{\beta}(\tau)) &= 1 - \E\big(\frac{c_{11}(\tau) \; c_{00}(\tau)}{c_{10}(\tau)\; c_{01}(\tau)}\big)\\
+  &= 1 - \frac{\E(c_{11}(\tau)) \; \E(c_{00}(\tau))}{\E(c_{10}(\tau))\; \E(c_{01}(\tau))} \\
+  &= 1 - \frac{N \; \nu \; \int_{t=0}^{\tau} e^{-\beta \Lambda_I(t)} \; \beta \lambda_I(t) dt \times 
+  	N \; (1 - \nu) \; \int_{t=0}^{\tau} e^{-\Lambda_I(t)}\; \lambda_{nI}(t) dt}{
+  		N \; (1 - \nu) \; \int_{t=0}^{\tau} e^{-\Lambda_I(t)}\; \lambda_I(t) dt \times
+  		N \; \nu \; \int_{t=0}^{\tau} e^{-\beta \Lambda_I(t)}\;\lambda_{nI}(t) dt} \\
+  	&= 1 - \frac{\big(1 - e^{ - \beta \Lambda_I(\tau)}\big)\times \big(1 - e^{ - \Lambda_I(\tau)}\big)}{\big(1 - e^{ - \Lambda_I(\tau)}\big)\times \frac{1}{\beta} \; \big(1 - e^{ - \beta \Lambda_I(\tau)}\big) }\\
+  			&= \beta 
+\end{align}
+%
+\end{proof}
+%
+Full ascertainment of all infections, however, is hardly possible. Therefore, \eqref{eq:VE_estimate} will not be an unbiased estimate of VE, i.e.
+%
+\begin{align}
+\E (1 - \hat{\beta}(\tau)) & = 1 - \frac{\big(1 - e^{ - \beta \Lambda_I(\tau)}\big)}{\big(1 - e^{ - \Lambda_I(\tau)}\big)} \\
+ &\neq \beta.
+\end{align}
+%
+In addition, relevant to this discussion, q
+ more
 %
 \section*{Acknowledgements}
 \ldots
