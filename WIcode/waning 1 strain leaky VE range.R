@@ -85,16 +85,18 @@ for (k in seq_along(VErnge)){
   
   rls <- casesv/casesnv
   vacc <- ((xv + yv + zv)/(xv + yv + zv +xnv + ynv + znv))[-1]
+  vaccsusc <- (xv / (xv + xnv))[-1]
   
   casels <- casesnv + casesv
   infls <- yv + ynv
   VEls <- sapply(1:length(casesv), function(x) ifelse(casesv[x]<1e-5,NA,1-(rls[x]/(vacc[x]/(1-vacc[x])))))
-  trueVEls <- sapply(VEls,function(x) phi)
+  trueVEls <- sapply(1:length(casesv), function(x) ifelse(casesv[x]<1e-5,NA,1-(rls[x]/(vaccsusc[x]/(1-vaccsusc[x])))))
+  # trueVEls <- sapply(VEls,function(x) phi)
   
   casearr[[k]] <- casels
   infarr[[k]] <- infls
   VEarr[[k]] <- VEls
-  trueVEarr[[k]] <- phi
+  trueVEarr[[k]] <- trueVEls
 }
 ###################################################################################################
 ###  Plots ########################################################################################
