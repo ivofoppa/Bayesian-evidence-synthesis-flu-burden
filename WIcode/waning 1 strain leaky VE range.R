@@ -122,13 +122,13 @@ timesselList <- lapply(seq_along(VErnge), function(x) seq(minsells[x],minsells[x
 ###################################################################################################
 ###  Saving workspace for use in Markdown document ################################################
 ###################################################################################################
-filepath <- 'C:/Users/VOR1/Documents/Git projects/Waning-Immunity-artefact/WIwriteup/workspace.RData'
-
+filepath <- 'C:/Users/IFoppa/Documents/GitHub/Waning-Immunity-artefact/WIwriteup/WIplots/workspace.RData'
 save.image(file = filepath)
 ###################################################################################################
 ###################################################################################################cols <- rainbow(length(VErnge))
 ### Epi curves
 cols <- rainbow(length(VErnge))
+setwd('C:/Users/IFoppa/Documents/GitHub/Waning-Immunity-artefact/WIwriteup/WIplots')
 
 pdf('Epicurves.pdf',paper='USr',height = 8.5,width = 11) 
 plot((0:maxtime)*dt,casearr[[1]][timesselList[[1]]],type = 'l', col = cols[1], ylab = 'Incidence', xlab = 'Day')
@@ -136,7 +136,7 @@ plot((0:maxtime)*dt,casearr[[1]][timesselList[[1]]],type = 'l', col = cols[1], y
 for (k in seq_along(VErnge)){
   lines((0:maxtime)*dt,casearr[[k]][timesselList[[1]]],col = cols[k])
 }
-legend('right',c('0.2','0.3','0.4','0.5'), lty = 1, col = cols,bty = 'n' ,title = 'VE')
+legend('top',c('0.2','0.3','0.4','0.5'), lty = 1, col = cols,bty = 'n' ,title = 'VE')
 dev.off()
 ###################################################################################################
 ### VE over time
@@ -146,11 +146,12 @@ plot((0:maxtime)*dt, VEarr[[1]][timesselList[[1]]],type = 'l', col = cols[1], yl
 for (k in seq_along(VErnge)){
   lines((0:maxtime)*dt, VEarr[[k]][timesselList[[k]]],col = cols[k])
 }
-legend('bottomright',c('0.2','0.3','0.4','0.5'), lty = 1, col = cols,bty = 'n' ,title = 'VE')
+legend('top',rev(c('0.2','0.3','0.4','0.5')), lty = 1, col = rev(cols),bty = 'n' ,title = 'VE')
 dev.off()
 ####################################################################################################
 ####################################################################################################
 ### Abs. VE bias over time
+pdf('VEbias_abs.pdf',paper='USr',height = 8.5,width = 11) 
 
 miny <- min((VEarr[[1]][timesselList[[1]]] - VErnge[1]),na.rm = T)
 maxy <- max((VEarr[[1]][timesselList[[1]]] - VErnge[1]),na.rm = T)
@@ -161,12 +162,14 @@ axis(2,c(-.2,-.15,-.10,-.05,0),labels = c(-20,-15,-10,-5,0))
 for (k in seq_along(VErnge)){
   lines((0:maxtime)*dt, (VEarr[[k]][timesselList[[k]]] - VErnge[k]),col = cols[k])
 }
-legend('left',c('0.2','0.3','0.4','0.5'), lty = 1, col = cols,bty = 'n' ,title = 'VE')
+legend('left',rev(c('0.2','0.3','0.4','0.5')), lty = 1, col = rev(cols),bty = 'n' ,title = 'VE')
+dev.off()
 ####################################################################################################
 ####################################################################################################
 ### Rel. VE bias over time
-
 miny <- min((VEarr[[1]][timesselList[[1]]] - VErnge[1])/VErnge[1],na.rm = T)
+
+pdf('VEbias_rel.pdf',paper='USr',height = 8.5,width = 11) 
 
 plot((0:maxtime)*dt, (VEarr[[1]][timesselList[[1]]] - VErnge[1])/VErnge[1],type = 'l', col = cols[1], ylab = 'VE est.', xlab = 'Day',yaxt = 'n')
 axis(2,c(-.75,-.5,-.25,0),labels = c(-75,-50,-25,0))
@@ -174,7 +177,8 @@ axis(2,c(-.75,-.5,-.25,0),labels = c(-75,-50,-25,0))
 for (k in seq_along(VErnge)){
   lines((0:maxtime)*dt, (VEarr[[k]][timesselList[[k]]] - VErnge[k])/VErnge[k],col = cols[k])
 }
-legend('left',c('0.2','0.3','0.4','0.5'), lty = 1, col = cols,bty = 'n' ,title = 'VE')
+legend('left',rev(c('0.2','0.3','0.4','0.5')), lty = 1, col = rev(cols),bty = 'n' ,title = 'VE')
+dev.off()
 ####################################################################################################
 ####################################################################################################
 ### Attack rate
