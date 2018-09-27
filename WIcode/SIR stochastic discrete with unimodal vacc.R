@@ -20,12 +20,12 @@ seas <- 500 ## Number of days in epidemic
 ### Generating the vaccination rate over time
 vacc1 <- 0.47
 
-prevdur <- 100 ## vaccination before transmission
-vdur <- prevdur + 0 ### duration of vaccination
+prevdur <- 50 ## vaccination before transmission
+vdur <- prevdur + 150 ### duration of vaccination
 
 vdurls <- 1:vdur
 
-raw_vls <- sapply(ls,function(x) dnorm(x,vdur/2,vdur/5)) ## Normally distributed vacc uptake
+raw_vls <- sapply(vdurls,function(x) dnorm(x,vdur/2,vdur/5)) ## Normally distributed vacc uptake
 s1 <- -log(vacc1)
 v0 <- raw_vls/sum(raw_vls) * s1 ## scaled right
 v <- c(v0,rep(0,seas + prevdur - vdur))
@@ -168,6 +168,9 @@ for (t in 1:seas2){
 colnames(dataset) <- c('time','sincevacc','case','count')
 dataset <- data.frame(dataset)
 dataset$sincevacc <- factor(dataset$sincevacc)
+
+filepath <- paste0('C:/Users/IFoppa/Documents/GitHub/Waning-Immunity-artefact/WIwriteup/WIplots/simul_',prevdur,'_',vdur,'.RData')
+save(dataset,file = filepath)
 
 # delind <- which(dataset$case==1 & dataset$count==0)
 # dataset <- dataset[-delind,]

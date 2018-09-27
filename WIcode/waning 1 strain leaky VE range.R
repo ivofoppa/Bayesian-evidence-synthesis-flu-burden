@@ -124,6 +124,7 @@ timesselList <- lapply(seq_along(VErnge), function(x) seq(minsells[x],minsells[x
 ###################################################################################################
 filepath <- 'C:/Users/IFoppa/Documents/GitHub/Waning-Immunity-artefact/WIwriteup/WIplots/workspace.RData'
 save.image(file = filepath)
+# load(filepath)
 ###################################################################################################
 ###################################################################################################cols <- rainbow(length(VErnge))
 ### Epi curves
@@ -156,7 +157,7 @@ pdf('VEbias_abs.pdf',paper='USr',height = 8.5,width = 11)
 miny <- min((VEarr[[1]][timesselList[[1]]] - VErnge[1]),na.rm = T)
 maxy <- max((VEarr[[1]][timesselList[[1]]] - VErnge[1]),na.rm = T)
 
-plot((0:maxtime)*dt, (VEarr[[1]][timesselList[[1]]] - VErnge[1]),type = 'l', col = cols[1], ylab = 'VE est.', xlab = 'Day',yaxt = 'n',ylim = c(-.22,0))
+plot((0:maxtime)*dt, (VEarr[[1]][timesselList[[1]]] - VErnge[1]),type = 'l', col = cols[1], ylab = 'Abs. Bias', xlab = 'Day',yaxt = 'n',ylim = c(-.22,0))
 axis(2,c(-.2,-.15,-.10,-.05,0),labels = c(-20,-15,-10,-5,0))
 
 for (k in seq_along(VErnge)){
@@ -171,7 +172,7 @@ miny <- min((VEarr[[1]][timesselList[[1]]] - VErnge[1])/VErnge[1],na.rm = T)
 
 pdf('VEbias_rel.pdf',paper='USr',height = 8.5,width = 11) 
 
-plot((0:maxtime)*dt, (VEarr[[1]][timesselList[[1]]] - VErnge[1])/VErnge[1],type = 'l', col = cols[1], ylab = 'VE est.', xlab = 'Day',yaxt = 'n')
+plot((0:maxtime)*dt, (VEarr[[1]][timesselList[[1]]] - VErnge[1])/VErnge[1],type = 'l', col = cols[1], ylab = 'Rel. Bias', xlab = 'Day',yaxt = 'n')
 axis(2,c(-.75,-.5,-.25,0),labels = c(-75,-50,-25,0))
 
 for (k in seq_along(VErnge)){
