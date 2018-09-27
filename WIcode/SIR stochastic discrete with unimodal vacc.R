@@ -20,7 +20,7 @@ seas <- 500 ## Number of days in epidemic
 ### Generating the vaccination rate over time
 vacc1 <- 0.47
 
-prevdur <- 50 ## vaccination before transmission
+prevdur <- 100 ## vaccination before transmission
 vdur <- prevdur + 150 ### duration of vaccination
 
 vdurls <- 1:vdur
@@ -170,7 +170,7 @@ dataset <- data.frame(dataset)
 dataset$sincevacc <- factor(dataset$sincevacc)
 
 filepath <- paste0('C:/Users/IFoppa/Documents/GitHub/Waning-Immunity-artefact/WIwriteup/WIplots/simul_',prevdur,'_',vdur,'.RData')
-save(dataset,file = filepath)
+save(dataset,studydata,file = filepath)
 
 # delind <- which(dataset$case==1 & dataset$count==0)
 # dataset <- dataset[-delind,]
