@@ -1,10 +1,8 @@
-## Discrete stochastic transmission model with contact matrix
-## Latent period (from Comflu_bas): 30% 1 day; 50% 2 days and 20% 3 days;
-## Infectious period: 30% 3, 40% 4, 20% 5, 10% 6 days
+## Discrete stochastic transmission model with unimodal vaccination uptake
 library(binhf)
 library(survival)
 Ntot <- 2000000
-## Creating population according to latent (rows) and infectious periods (columns) in each of the age groups
+
 r0 <- 1.6
 delta <- 1/4 ## infectious period
 beta <- r0 * delta
