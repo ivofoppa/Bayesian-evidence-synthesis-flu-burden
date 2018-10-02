@@ -3,7 +3,7 @@ library(binhf)
 library(survival)
 Ntot <- 2000000
 
-r10 <- 1.6
+r10 <- 1.5
 r20 <- 1.8
 delta <- 1/4 ## infectious period
 
@@ -19,8 +19,8 @@ seas <- 500 ## Number of days in epidemic
 ### Generating the vaccination rate over time
 vacc1 <- 0.47 ## cumulative vaccination coverage
 
-vs1 <- .6 ## proportion of subject who, if vacc. remain susc. to virus 1
-vs2 <- .2 ## proportion of subject who, if vacc. remain to virus 2
+vs1 <- .3 ## proportion of subject who, if vacc. remain susc. to virus 1
+vs2 <- .6 ## proportion of subject who, if vacc. remain to virus 2
 vs0 <- 1 - vs1 - vs2
 
 prevdur <- 100 ## vaccination before transmission
@@ -101,8 +101,8 @@ while (time <= prevdur){
 studydata <- array(0,dim = c(seas,1 + 2 * nvaccat + 2))
 studydata2 <- array(0,dim = c(seas,1 + 2 * nvaccat + 2))
 
-inf1num <- 50 ## Number of seed infections
-inf2num <- 50 ## Number of seed infections
+inf1num <- 90 ## Number of seed infections
+inf2num <- 10 ## Number of seed infections
 ## Infections in unvaccinated
 pinf11nv <-  S1nv/(S1nv + S2nv + S0nv + sum(S1v))  ### probability that infections with virus 1 are in type 1 individuals
 pinf21nv <-  S2nv/(S1nv + S2nv + S0nv + sum(S1v))  ### probability that infections with virus 1 are in type 2 individuals
@@ -122,14 +122,14 @@ inf11nv <- rbinom(1,inf1num,pinf11nv)
 inf21nv <- rbinom(1,inf1num - inf11nv, pinf21nv/(pinf21nv + pinf01nv + pinf11v))
 inf01nv <- rbinom(1,inf1num - inf11nv - inf21nv, pinf01nv/(pinf01nv + pinf11v))
 inf11vnum <- inf1num - inf11nv - inf21nv - inf01nv
-inf11v <- c(rmultinom(1,inf11vnum,rep(1/prevdur,prevdur)),rep(0,seas)); S1v <- S1v - I11v
+inf11v <- c(rmultinom(1,inf11vnum,rep(1/prevdur,prevdur)),rep(0,seas)); S1v <- S1v - inf11v
 
 ## virus 2
 inf12nv <- rbinom(1,inf2num,pinf12nv)
 inf22nv <- rbinom(1,inf2num - inf12nv, pinf22nv/(pinf22nv + pinf02nv + pinf22v))
 inf02nv <- rbinom(1,inf2num - inf12nv - inf22nv, pinf02nv/(pinf02nv + pinf22v))
 inf22vnum <- inf2num - inf12nv - inf22nv - inf02nv
-inf22v <- c(rmultinom(1,inf22vnum,rep(1/prevdur,prevdur)),rep(0,seas)); S2v <- S2v - I22v
+inf22v <- c(rmultinom(1,inf22vnum,rep(1/prevdur,prevdur)),rep(0,seas)); S2v <- S2v - inf22v
 #########################################################################################
 #########################################################################################
 ## updating states: Infections with virus 1
@@ -168,7 +168,7 @@ while (time <= seas + prevdur){
   I1ls <- c(I1ls,sum(inf11v) + inf11nv + inf21nv + inf01nv)  
   ## virus 2
   p2inf <- pSE(r20,I2)
-  inf12nv <- rbinom(1, S2nv, p2inf)
+  inf12nv <- rbinom(1, S1nv, p2inf)
   inf22nv <- rbinom(1, S2nv, p2inf)
   inf02nv <- rbinom(1, S0nv, p2inf)
   
@@ -277,16 +277,17 @@ for (t in 1:seas2){
     ncases2 <- studydata2[t,2 + k]
     nnoncases2 <- studydata2[t,8 + k]
     
-    ncontrols <- rbinom(1,nnoncases,pcontrol)
-    ncontrols2 <- rbinom(1,nnoncases2,pcontrol2)
-    # ncontrols <- nnoncases
-    if ((ncases > 0 & ncontrols > 0) & (!is.na(ncases) & !is.na(ncontrols))){
+    # ncontrols <- rbinom(1,nnoncases,pcontrol)
+    # ncontrols2 <- rbinom(1,nnoncases2,pcontrol2)
+    ncontrols <- nnoncases
+    ncontrols2 <- nnoncases2
+    if ((ncases > 5 & ncontrols > 5) & (!is.na(ncases) & !is.na(ncontrols))){
       datarec <- c(t,k,1,ncases)
       dataset <- rbind(dataset,datarec,deparse.level = 0)
       datarec <- c(t,k,0,ncontrols)
       dataset <- rbind(dataset,datarec,deparse.level = 0)
     }
-    if ((ncases2 > 0 & ncontrols2 > 0) & (!is.na(ncases2) & !is.na(ncontrols2))){
+    if ((ncases2 > 5 & ncontrols2 > 5) & (!is.na(ncases2) & !is.na(ncontrols2))){
       datarec2 <- c(t,k,1,ncases2)
       dataset2 <- rbind(dataset2,datarec2,deparse.level = 0)
       datarec2 <- c(t,k,0,ncontrols2)
@@ -318,10 +319,44 @@ save(dataset,dataset2,studydata,studydata2,file = filepath)
 ##  Crude analysis, only adjusting for time ##########################################################
 ##  Create new data set first               ##########################################################
 ######################################################################################################
+dataset3 <- NULL
+VEls <- NULL
+ccratio <- 2
+for (t in 1:seas2){
+  totcases <- sum(studydata[t,2:7])
+  totnoncases <- sum(studydata[t,8:13])
+  oddscontrol <- totcases/totnoncases * ccratio
+  pcontrol <- oddscontrol * totnoncases/Ntot
+  
+  ncasesnv <- studydata[t,2]
+  nnoncasesnv <- studydata[t,8]
+  
+  ncasesv <- sum(studydata[t,3:7])
+  nnoncasesv <- sum(studydata[t,9:13])
+  
+  ncontrolsv <- rbinom(1,nnoncasesv,pcontrol)
+  ncontrolsnv <- rbinom(1,nnoncasesnv,pcontrol)
+  # ncontrolsv <- nnoncasesv
+  # ncontrolsnv <- nnoncasesnv
+  
+  if (ncasesv >= 5 & ncasesnv >= 5){
+    datarec <- c(t,1,ncasesv,ncontrolsv)
+    dataset3 <- rbind(dataset3,datarec,deparse.level = 0)
+    datarec <- c(t,0,ncasesnv,ncontrolsnv)
+    dataset3 <- rbind(dataset3,datarec,deparse.level = 0)
+    
+    veest <- 1 - ncasesv * ncontrolsnv / (ncasesnv * ncontrolsv)
+    VEls <- c(VEls, veest)
+  }
+}
+colnames(dataset3) <- c('time','vacc','cases','controls')
+dataset3 <- data.frame(dataset3)
 
-
-logist <- glm(case ~ sincevacc ,weights = count, data = dataset,family = binomial(link = 'logit'))
+logist <- glm(cbind(cases,controls) ~ vacc, data = dataset3,family = binomial(link = 'logit'))
 summary(logist)
 ######################################################################################################
 ######################################################################################################
-plot(Ils)
+plot(VEls)
+
+plot(I1ls)
+lines(I2ls)
