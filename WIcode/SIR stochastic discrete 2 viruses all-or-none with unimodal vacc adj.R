@@ -319,8 +319,11 @@ cond_logist2 <- clogit(case ~ sincevacc + strata(time),weights = count, data = d
 summary(cond_logist2)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 # filepath <- paste0('C:/Users/VOR1/Documents/GitHub/Waning-Immunity-artefact/WIwriteup/WIplots/','simul_2_virus_adj_100_300.RData')
 # load(filepath)
+=======
+>>>>>>> parent of 6b79617... Updates
 filepath <- paste0('C:/Users/VOR1/Documents/GitHub/Waning-Immunity-artefact/WIwriteup/WIplots/simul_2_virus_adj_',prevdur,'_',vdur,'.RData')
 =======
 filepath <- paste0('C:/Users/VOR1/Documents/GitHub/Waning-Immunity-artefact/WIwriteup/WIplots/simul_adj_',prevdur,'_',vdur,'.RData')

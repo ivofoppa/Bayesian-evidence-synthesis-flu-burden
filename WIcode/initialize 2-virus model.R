@@ -133,10 +133,12 @@ S1nv <- S1nv - inf11nv - inf12nv
 S2nv <- S2nv - inf21nv - inf22nv
 S0nv <- S0nv - inf01nv - inf02nv
 S12nv <- S12nv - inf121nv - inf122nv
+Rnv <- Rnv + rem1nv + rem2nv
 ## vaccinated
 S1v <- S1v - inf11v
 S2v <- S2v - inf22v
 S12v <- S12v - inf121v - inf122v
+Rv <- Rv + rem1v + rem2v
 
 I1 <- sum(c(I1nv,I1v))
 I2 <- sum(c(I2nv,I2v))
