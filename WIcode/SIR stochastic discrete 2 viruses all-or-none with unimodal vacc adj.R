@@ -4,7 +4,7 @@ library(survival)
 Ntot <- 2000000
 
 r10 <- 1.5
-r20 <- 1.5
+r20 <- 1.6
 delta <- 1/4 ## infectious period
 
 prem <- 1 - exp(-delta) ## Daily removal probability
@@ -19,10 +19,9 @@ seas <- 500 ## Number of days in epidemic
 ### Generating the vaccination rate over time
 vacc1 <- 0.47 ## cumulative vaccination coverage
 
-vs1 <- .2 ## proportion of subject who, if vacc. remain susc. to virus 1
-vs2 <- .3 ## proportion of subject who, if vacc. remain susc. to virus 2
-vs0 <- .3 ## proportion of subject who, if vacc. remain susc. to neither virus
-vs12 <- .2 ## proportion of subject who, if vacc. remain susc. to both viruses
+vs1 <- .3 ## proportion of subject who, if vacc. remain susc. to virus 1
+vs2 <- .6 ## proportion of subject who, if vacc. remain to virus 2
+vs0 <- 1 - vs1 - vs2
 
 # ## scaling the second virus to about virus 1 transmissability
 # fac1 <- vacc1 *vs1 + (1 - vacc1)
@@ -41,10 +40,122 @@ v <- c(v0,rep(0,seas + prevdur - vdur))
 vaccdelim <- c(seq(1,vdur,round(vdur/5)),seas + prevdur)
 nvaccat <- length(vaccdelim) - 1 ## number of time-since-vacc categories
 ###################################################################################################
+###################################################################################################
+S1nvinit <- rbinom(1,Ntot,vs1) ## only susceptible to virus 1 if vacc.
+S2nvinit <- rbinom(1,Ntot - S1nvinit,vs2/(1 - vs1)) ## only susceptible to virus 2 if vacc.
+S0nvinit <- Ntot - S1nvinit - S2nvinit ## not susceptible to either virus if vacc.
+
+S1vinit <- S2vinit <- S0vinit <-  rep(0,seas + prevdur) ## Susceptible to only virus 1, 2 neither if vacc.
+
+I1nvinit <- I2nvinit <- 0
+I1vinit <- I2vinit <-  rep(0,seas + prevdur)
+
+Rnvinit <- 0
+Rvinit <- rep(0,seas + prevdur)
+
+inits <- list(S1vinit=S1vinit,S2vinit=S2vinit,S0vinit=S0vinit,
+              S1nvinit=S1nvinit,S2nvinit=S2nvinit,S0nvinit=S0nvinit,
+              I1vinit=I1vinit,I2vinit=I2vinit,
+              I1nvinit=I1nvinit,I2nvinit=I2nvinit,
+              Rvinit=Rvinit,Rnvinit=Rnvinit)
+
 # sim <- 1
 # ccratio <- 3
 
-source('initialize 2-virus model.R') ## run initialization code
+S1nv <- as.integer(inits$S1nvinit)
+S2nv <- as.integer(inits$S2nvinit)
+S0nv <- as.integer(inits$S0nvinit)
+
+S1v <- as.integer(inits$S1vinit)
+S2v <- as.integer(inits$S2vinit)
+S0v <- as.integer(inits$S0vinit)
+
+I1nv <- as.integer(inits$I1nvinit)
+I2nv <- as.integer(inits$I2nvinit)
+
+I1v <- as.integer(inits$I1vinit)
+I2v <- as.integer(inits$I2vinit)
+
+Rnv <- as.integer(inits$Rnvinit)
+
+Rv <- as.integer(inits$Rvinit)
+
+time <- 1
+
+while (time <= prevdur){
+  ###################################################################################################
+  ###################################################################################################
+  ### Vaccination
+  pvacc <- exp(-v[time]) ## vaccination uptake at this time
+
+  S1v <- shift(S1v,1)
+  s1vacc <- rbinom(1,S1nv,1 - pvacc)
+  S1v[1] <- s1vacc; S1nv <- S1nv - s1vacc
+  
+  S2v <- shift(S2v,1)
+  s2vacc <- rbinom(1,S2nv,1 - pvacc)
+  S2v[1] <- s2vacc; S2nv <- S2nv - s2vacc
+  
+  S0v <- shift(S0v,1)
+  s0vacc <- rbinom(1,S0nv,1 - pvacc)
+  S0v[1] <- s0vacc; S0nv <- S0nv - s0vacc
+  
+  time <- time + 1
+}
+
+studydata <- array(0,dim = c(seas,1 + 2 * nvaccat + 2))
+studydata2 <- array(0,dim = c(seas,1 + 2 * nvaccat + 2))
+
+inf1num <- 90 ## Number of seed infections
+inf2num <- 10 ## Number of seed infections
+## Infections in unvaccinated
+pinf11nv <-  S1nv/(S1nv + S2nv + S0nv + sum(S1v))  ### probability that infections with virus 1 are in type 1 individuals
+pinf21nv <-  S2nv/(S1nv + S2nv + S0nv + sum(S1v))  ### probability that infections with virus 1 are in type 2 individuals
+pinf01nv <-  S0nv/(S1nv + S2nv + S0nv + sum(S1v))  ### probability that infections with virus 1 are in type 0 individuals
+## virus 2
+pinf12nv <-  S1nv/(S1nv + S2nv + S0nv + sum(S2v))  ### probability that infections with virus 1 are in type 1 individuals
+pinf22nv <-  S2nv/(S1nv + S2nv + S0nv + sum(S2v))  ### probability that infections with virus 1 are in type 2 individuals
+pinf02nv <-  S0nv/(S1nv + S2nv + S0nv + sum(S2v))  ### probability that infections with virus 1 are in type 0 individuals
+## Infections in vaccinated
+pinf11v <-  1 - pinf11nv - pinf21nv - pinf01nv  ### probability that infections with virus 1 are in type 1 individuals
+## virus 2
+pinf22v <-  1 - pinf11nv - pinf21nv - pinf01nv  ### probability that infections with virus 1 are in type 1 individuals
+
+## infection numbers by virus and type
+## virus 1
+inf11nv <- rbinom(1,inf1num,pinf11nv)
+inf21nv <- rbinom(1,inf1num - inf11nv, pinf21nv/(pinf21nv + pinf01nv + pinf11v))
+inf01nv <- rbinom(1,inf1num - inf11nv - inf21nv, pinf01nv/(pinf01nv + pinf11v))
+inf11vnum <- inf1num - inf11nv - inf21nv - inf01nv
+inf11v <- c(rmultinom(1,inf11vnum,rep(1/prevdur,prevdur)),rep(0,seas)); S1v <- S1v - inf11v
+
+## virus 2
+inf12nv <- rbinom(1,inf2num,pinf12nv)
+inf22nv <- rbinom(1,inf2num - inf12nv, pinf22nv/(pinf22nv + pinf02nv + pinf22v))
+inf02nv <- rbinom(1,inf2num - inf12nv - inf22nv, pinf02nv/(pinf02nv + pinf22v))
+inf22vnum <- inf2num - inf12nv - inf22nv - inf02nv
+inf22v <- c(rmultinom(1,inf22vnum,rep(1/prevdur,prevdur)),rep(0,seas)); S2v <- S2v - inf22v
+#########################################################################################
+#########################################################################################
+## updating states: Infections with virus 1
+I1nv <- I1nv + inf11nv + inf21nv + inf01nv
+I1v <- I1v + inf11v
+## updating states: Infections with virus 2
+I2nv <- I2nv + inf12nv + inf22nv + inf02nv
+I2v <- I2v + inf22v
+## updating states: Infections with either virus
+## unvaccinated
+S1nv <- S1nv - inf11nv - inf12nv
+S2nv <- S2nv - inf21nv - inf22nv
+S0nv <- S0nv - inf01nv - inf02nv
+## vaccinated
+S1v <- S1v - inf11v
+S2v <- S2v - inf22v
+
+I1 <- sum(c(I1nv,I1v))
+I2 <- sum(c(I2nv,I2v))
+
+I1ls <- I2ls <- NULL
 
 while (time <= seas + prevdur){
   ## virus 1
@@ -52,80 +163,62 @@ while (time <= seas + prevdur){
   inf11nv <- rbinom(1, S1nv, p1inf)
   inf21nv <- rbinom(1, S2nv, p1inf)
   inf01nv <- rbinom(1, S0nv, p1inf)
-  inf121nv <- rbinom(1, S12nv, p1inf)
   
   inf11v <- sapply(S1v, function(sv) rbinom(1, sv, p1inf))
   inf11v2 <- sapply(seq_along(inf11v), function(k) ifelse(k <= (time - prevdur), 0, inf11v[k]))
-  inf121v <- sapply(S12v, function(sv) rbinom(1, sv, p1inf))
-  inf121v2 <- sapply(seq_along(inf121v), function(k) ifelse(k <= (time - prevdur), 0, inf11v[k]))
   
   rem1nv <- rbinom(1,I1nv,prem)
   rem1v <- sapply(I1v, function(iv) rbinom(1,iv, prem))
-  ## Updating # susceptibles, because used again for virus 2
-  ## unvaccinated
-  S1nv <- S1nv - inf11nv
-  S2nv <- S2nv - inf21nv
-  S0nv <- S0nv - inf01nv
-  S12nv <- S12nv - inf121nv
-  ## vaccinated
-  S1v <- S1v - inf11v
-  S12v <- S12v - inf121v
-  
   ## for plotting purposes ...
-  I1ls <- c(I1ls,sum(inf11v) + sum(inf121v) + inf11nv + inf21nv + inf01nv + inf121nv)  
+  I1ls <- c(I1ls,sum(inf11v) + inf11nv + inf21nv + inf01nv)  
   ## virus 2
   p2inf <- pSE(r20,I2)
   inf12nv <- rbinom(1, S1nv, p2inf)
   inf22nv <- rbinom(1, S2nv, p2inf)
   inf02nv <- rbinom(1, S0nv, p2inf)
-  inf122nv <- rbinom(1, S12nv, p2inf)
   
-  inf22v <- sapply(S2v, function(sv) rbinom(1, sv, p2inf))
+  inf22v <- sapply(S1v, function(sv) rbinom(1, sv, p2inf))
   inf22v2 <- sapply(seq_along(inf22v), function(k) ifelse(k <= (time - prevdur), 0, inf22v[k]))
-  inf122v <- sapply(S12v, function(sv) rbinom(1, sv, p1inf))
-  inf122v2 <- sapply(seq_along(inf122v), function(k) ifelse(k <= (time - prevdur), 0, inf11v[k]))
   
   rem2nv <- rbinom(1,I2nv,prem)
   rem2v <- sapply(I2v, function(iv) rbinom(1,iv, prem))
-  ## Updating # susceptibles
-  ## unvaccinated
-  S1nv <- S1nv - inf12nv
-  S2nv <- S2nv - inf22nv
-  S0nv <- S0nv - inf02nv
-  S12nv <- S12nv - inf122nv
-  ## vaccinated
-  S2v <- S2v - inf22v
-  S12v <- S12v - inf122v
-  
   ## for plotting purposes ...
-  I2ls <- c(I2ls,sum(inf22v) + sum(inf122v) + inf12nv + inf22nv + inf02nv + inf122nv)  
+  I2ls <- c(I2ls,sum(inf22v) + inf12nv + inf22nv + inf02nv)  
   #########################################################################################
-  ## updating other states: Infections with virus 1
-  I1nv <- I1nv + inf11nv + inf21nv + inf01nv + inf121nv - rem1nv
-  I1v <- I1v + inf11v + inf121v - rem1v
-  ## updating other states: Infections with virus 2
-  I2nv <- I2nv + inf12nv + inf22nv + inf02nv + inf122nv - rem2nv
-  I2v <- I2v + inf22v + inf122v - rem2v
+  #########################################################################################
+  ## updating states: Infections with virus 1
+  I1nv <- I1nv + inf11nv + inf21nv + inf01nv - rem1nv
+  I1v <- I1v + inf11v - rem1v
+  ## updating states: Infections with virus 2
+  I2nv <- I2nv + inf12nv + inf22nv + inf02nv - rem2nv
+  I2v <- I2v + inf22v - rem2v
   ## updating states: Infections with either virus
+  ## unvaccinated
+  S1nv <- S1nv - inf11nv - inf12nv
+  S2nv <- S2nv - inf21nv - inf22nv
+  S0nv <- S0nv - inf01nv - inf02nv
   Rnv <- Rnv + rem1nv + rem2nv
+  ## vaccinated
+  S1v <- S1v - inf11v
+  S2v <- S2v - inf22v
   Rv <- Rv + rem1v + rem2v
-  
+  ## Total numbers infectious with the two viruses  
   I1 <- sum(c(I1nv,I1v))
   I2 <- sum(c(I2nv,I2v))
   ###################################################################################################
   ### "Study" is conducted ##########################################################################
   ###################################################################################################
-  infnv <- inf11nv + inf21nv + inf01nv + inf121nv + inf12nv + inf22nv + inf02nv + inf122nv
-  infv <- inf11v + inf22v + inf121v + inf122v
-  infv2 <- inf11v2 + inf22v2 + inf121v2 + inf122v2
+  infnv <- inf11nv + inf21nv + inf01nv + inf12nv + inf22nv + inf02nv
+  infv <- inf11v + inf22v
+  infv2 <- inf11v2 + inf22v2
   
   casesls <- c(infnv,sapply(seq_along(vaccdelim[-1]), function(x) sum(infv[vaccdelim[x] : vaccdelim[x + 1]])))
   casesls2 <- c(infnv,sapply(seq_along(vaccdelim[-1]), function(x) sum(infv2[vaccdelim[x] : vaccdelim[x + 1]])))
   
-  controlsvsum <- S1v + S2v + S0v + S12v + Rv
+  controlsvsum <- S1v + S2v + S0v + Rv
   controlsvsum2 <- sapply(seq_along(controlsvsum), function(k) ifelse(k <= (time - prevdur), 0, controlsvsum[k]))
   
-  controlsnv <- S1nv + S2nv + S0nv + S12nv + Rnv
+  controlsnv <- S1nv + S2nv + S0nv + Rnv
   
   controlsls <- c(controlsnv,sapply(seq_along(vaccdelim[-1]), function(x) sum(controlsvsum[vaccdelim[x] : vaccdelim[x + 1]])))
   controlsls2 <- c(controlsnv,sapply(seq_along(vaccdelim[-1]), function(x) sum(controlsvsum2[vaccdelim[x] : vaccdelim[x + 1]])))
@@ -139,31 +232,25 @@ while (time <= seas + prevdur){
   }
   ###################################################################################################
   ### Vaccination: proceeding time since vacc. and adding new vaccinees
-  pvacc <- 1 - exp(-v[time]) ## vaccination uptake at this time
+  pvacc <- exp(-v[time]) ## vaccination uptake at this time
   
   S1v <- shift(S1v,1)
-  s1vacc <- rbinom(1,S1nv,pvacc)
+  s1vacc <- rbinom(1,S1nv,1 - pvacc)
   S1v[1] <- s1vacc; S1nv <- S1nv - s1vacc
   
   S2v <- shift(S2v,1)
-  s2vacc <- rbinom(1,S2nv,pvacc)
+  s2vacc <- rbinom(1,S2nv,1 - pvacc)
   S2v[1] <- s2vacc; S2nv <- S2nv - s2vacc
   
   S0v <- shift(S0v,1)
-  s0vacc <- rbinom(1,S0nv,pvacc)
+  s0vacc <- rbinom(1,S0nv,1 - pvacc)
   S0v[1] <- s0vacc; S0nv <- S0nv - s0vacc
   
-  S12v <- shift(S12v,1)
-  s12vacc <- rbinom(1,S12nv,pvacc)
-  S12v[1] <- s12vacc; S12nv <- S12nv - s12vacc
-  
   I1v <- shift(I1v,1) ### Infectious not getting vaccinated, by assumption
-  I2v <- shift(I2v,1) ### note that number represent virus, not type
+  I2v <- shift(I2v,1) ### 
   # 
   Rv <- shift(Rv,1)
-  rvacc <- rbinom(1,Rnv,pvacc)
-  Rv[1] <- rvacc; Rnv <- Rnv - rvacc
-  
+
   time <- time + 1
 }
 
