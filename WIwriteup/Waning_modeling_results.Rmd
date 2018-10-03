@@ -114,12 +114,15 @@ As Figure \ref{fig:fig1} shows, the observed VE always declined, The absulute de
 
 \clearpage
 ```{r fig3,eval=TRUE,fig.pos='ht',echo=FALSE,fig.width=6,fig.height=4}
-plot((0:maxtime)*dt,casearr[[1]][timesselList[[1]]],type = 'l', col = cols[1], ylab = 'Incidence', xlab = 'Day')
+datarr5 <- datarr[which(datarr$age==5),]
 
-for (k in seq_along(VErnge)){
-  lines((0:maxtime)*dt,casearr[[k]][timesselList[[1]]],col = cols[k])
-}
-legend('top',c('0.2','0.3','0.4','0.5'), lty = 1, col = cols,bty = 'n' ,title = 'VE')
+rcu <- datarr5$rcu
+RSV <- datarr5$RSV
+rsvstd <- RSV/(max(RSV))*max(rcu - min(rcu)) + min(rcu)
+
+plot(rcu,ylim = c(0,max(rcu)),ylab = '# of Deaths',xlab = 'index Week')
+lines(rsvstd,col = 'red',lwd = 2)
+legend('bottom',c('R\\&C Deaths ','RSV Indicator (norm.)'), lty = c(NA,1), lwd = c(NA,2),col = c('black','red'),pch = c(1,NA) ,title = 'VE')
 ```
 
 ```{r fig4,eval=TRUE,echo=FALSE,fig.cap='Epi curve (top) and cummulative attack rates (bottom) over time, by VE.\\label{fig:fig4}',fig.pos='ht',fig.width=6,fig.height=4}

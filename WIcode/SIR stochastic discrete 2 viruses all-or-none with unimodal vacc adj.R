@@ -231,6 +231,8 @@ summary(cond_logist)
 cond_logist2 <- clogit(case ~ sincevacc + strata(time),weights = count, data = dataset2,method = 'approximate')
 summary(cond_logist2)
 
+# filepath <- paste0('C:/Users/VOR1/Documents/GitHub/Waning-Immunity-artefact/WIwriteup/WIplots/','simul_2_virus_adj_100_300.RData')
+# load(filepath)
 filepath <- paste0('C:/Users/VOR1/Documents/GitHub/Waning-Immunity-artefact/WIwriteup/WIplots/simul_2_virus_adj_',prevdur,'_',vdur,'.RData')
 save(dataset,dataset2,studydata,studydata2,file = filepath)
 ######################################################################################################
