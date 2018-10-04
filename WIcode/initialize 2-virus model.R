@@ -1,3 +1,13 @@
+vdurls <- 1:vdur
+
+raw_vls <- sapply(vdurls,function(x) dnorm(x,vdur/2,vdur/5)) ## Normally distributed vacc uptake
+s1 <- -log(vacc1)
+v0 <- raw_vls/sum(raw_vls) * s1 ## scaled right
+v <- c(v0,rep(0,seas + prevdur - vdur))
+###################################################################################################
+###################################################################################################
+vaccdelim <- unique(c(seq(1,seas + prevdur,vaccint),seas + prevdur))
+nvaccat <- length(vaccdelim) - 1 ## number of time-since-vacc categories
 ###################################################################################################
 Snvinit <- rmultinom(1,Ntot,c(vs1,vs2,vs0,vs12))
 S1nvinit <- Snvinit[1] ## only susceptible to virus 1 if vacc.
@@ -74,11 +84,6 @@ while (time <= prevdur){
   time <- time + 1
 }
 
-studydata <- array(0,dim = c(seas,1 + 2 * nvaccat + 2))
-studydata2 <- array(0,dim = c(seas,1 + 2 * nvaccat + 2))
-
-inf1num <- 90 ## Number of seed infections
-inf2num <- 10 ## Number of seed infections
 ## Infections in unvaccinated
 pinf11nv <-  S1nv/(S1nv + S2nv + S0nv + S12nv + sum(S1v) + sum(S12v)) ### probability that infections with virus 1 are in type 1 individuals
 pinf21nv <-  S2nv/(S1nv + S2nv + S0nv + S12nv + sum(S1v) + sum(S12v))  ### probability that infections with virus 1 are in type 2 individuals
@@ -133,12 +138,12 @@ S1nv <- S1nv - inf11nv - inf12nv
 S2nv <- S2nv - inf21nv - inf22nv
 S0nv <- S0nv - inf01nv - inf02nv
 S12nv <- S12nv - inf121nv - inf122nv
-Rnv <- Rnv + rem1nv + rem2nv
+Rnv <- Rnv
 ## vaccinated
 S1v <- S1v - inf11v
 S2v <- S2v - inf22v
 S12v <- S12v - inf121v - inf122v
-Rv <- Rv + rem1v + rem2v
+Rv <- Rv
 
 I1 <- sum(c(I1nv,I1v))
 I2 <- sum(c(I2nv,I2v))
