@@ -4,7 +4,7 @@ library(survival)
 Ntot <- 2000000
 
 r10 <- 1.5
-r20 <- 1.8
+r20 <- 1.6
 delta <- 1/4 ## infectious period
 
 prem <- 1 - exp(-delta) ## Daily removal probability
@@ -22,6 +22,11 @@ vacc1 <- 0.47 ## cumulative vaccination coverage
 vs1 <- .3 ## proportion of subject who, if vacc. remain susc. to virus 1
 vs2 <- .6 ## proportion of subject who, if vacc. remain to virus 2
 vs0 <- 1 - vs1 - vs2
+
+# ## scaling the second virus to about virus 1 transmissability
+# fac1 <- vacc1 *vs1 + (1 - vacc1)
+# fac2 <- vacc1 *vs2 + (1 - vacc1)
+# r20 <- r10 * fac2/fac1
 
 prevdur <- 100 ## vaccination before transmission
 vdur <- prevdur + 200 ### duration of vaccination
@@ -313,7 +318,16 @@ summary(cond_logist)
 cond_logist2 <- clogit(case ~ sincevacc + strata(time),weights = count, data = dataset2,method = 'approximate')
 summary(cond_logist2)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+# filepath <- paste0('C:/Users/VOR1/Documents/GitHub/Waning-Immunity-artefact/WIwriteup/WIplots/','simul_2_virus_adj_100_300.RData')
+# load(filepath)
+=======
+>>>>>>> parent of 6b79617... Updates
+filepath <- paste0('C:/Users/VOR1/Documents/GitHub/Waning-Immunity-artefact/WIwriteup/WIplots/simul_2_virus_adj_',prevdur,'_',vdur,'.RData')
+=======
 filepath <- paste0('C:/Users/VOR1/Documents/GitHub/Waning-Immunity-artefact/WIwriteup/WIplots/simul_adj_',prevdur,'_',vdur,'.RData')
+>>>>>>> parent of 8315afe... update
 save(dataset,dataset2,studydata,studydata2,file = filepath)
 ######################################################################################################
 ##  Crude analysis, only adjusting for time ##########################################################
