@@ -1,37 +1,26 @@
 ## Discrete stochastic transmission model with unimdal vaccination uptake, two viruses, all-or-none protection
-library(binhf)
-library(survival)
-Ntot <- 2000000
 
-r10 <- 1.5
-r20 <- 1.5
+r10 <- 1.6
+r20 <- 1.8
 delta <- 1/4 ## infectious period
-
-prem <- 1 - exp(-delta) ## Daily removal probability
-
-pSE <- function(r0,I){ ## infection probability
-  beta <- r0 * delta
-  lambda <- beta * I / Ntot
-  return (as.numeric(1-exp(-lambda)))
-}
 
 seas <- 500 ## Number of days in epidemic
 ### Generating the vaccination rate over time
 vacc1 <- 0.47 ## cumulative vaccination coverage
 
-vs1 <- .2 ## proportion of subject who, if vacc. remain susc. to virus 1
-vs2 <- .5 ## proportion of subject who, if vacc. remain susc. to virus 2
-vs0 <- .2 ## proportion of subject who, if vacc. remain susc. to neither virus
-vs12 <- .2 ## proportion of subject who, if vacc. remain susc. to both viruses
+vs1 <- .1 ## proportion of subject who, if vacc. remain susc. to virus 1
+vs2 <- .4 ## proportion of subject who, if vacc. remain susc. to virus 2
+vs0 <- .3 ## proportion of subject who, if vacc. remain susc. to neither virus
+vs12 <- 1 - vs1 - vs2 - vs0 ## proportion of subject who, if vacc. remain susc. to both viruses
 
 # ## scaling the second virus to about virus 1 transmissability
 # fac1 <- vacc1 *vs1 + (1 - vacc1)
 # fac2 <- vacc1 *vs2 + (1 - vacc1)
 # r20 <- r10 * fac2/fac1
 
-prevdur <- 50 ## vaccination before transmission
-vdur <- prevdur + 100 ### duration of vaccination
-vaccint <- 30
+prevdur <- 50 ## number of days of vaccination campaigh before transmission
+vdur <- prevdur + 200 ### duration of vaccination
+vaccint <- 60
 ccratio <- Inf ## control-case ratio
 ###################################################################################################
 ##  Seed infections ###############################################################################

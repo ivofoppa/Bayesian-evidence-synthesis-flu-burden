@@ -4,10 +4,15 @@ studydata2 <- studydata20
 delind <- which(rowSums(studydata0[,2:(nvaccat + 1)])==0 | any(is.na(studydata0)))
 delind2 <- which(rowSums(studydata20[,2:(nvaccat + 1)])==0 | any(is.na(studydata20)))
 
-studydata <- studydata0[-delind,]
-studydata2 <- studydata20[-delind2,]
-
-seas2 <- head(delind,1) - 1
+if (length(delind)==0){
+  seas2 <- seas
+  studydata <- studydata0
+  studydata2 <- studydata20
+  } else {
+  seas2 <- head(delind,1) - 1
+  studydata <- studydata0[-delind,]
+  studydata2 <- studydata20[-delind2,]
+}
 ## Defining time-since-vacc delimiters
 ### Reorganizing data set for analysis--only vaccinated
 dataset <- dataset2 <- NULL
@@ -33,13 +38,13 @@ for (t in 1:seas2){
     ncontrols <- rbinom(1,nnoncases,pcontrol)
     ncontrols2 <- rbinom(1,nnoncases2,pcontrol2)
     
-    if ((ncases > 5 & ncontrols > 5) & (!is.na(ncases) & !is.na(ncontrols))){
+    if ((ncases >= 5 & ncontrols >= 5) & (!is.na(ncases) & !is.na(ncontrols))){
       datarec <- c(t,k,1,ncases)
       dataset <- rbind(dataset,datarec,deparse.level = 0)
       datarec <- c(t,k,0,ncontrols)
       dataset <- rbind(dataset,datarec,deparse.level = 0)
     }
-    if ((ncases2 > 5 & ncontrols2 > 5) & (!is.na(ncases2) & !is.na(ncontrols2))){
+    if ((ncases2 >= 5 & ncontrols2 >= 5) & (!is.na(ncases2) & !is.na(ncontrols2))){
       datarec2 <- c(t,k,1,ncases2)
       dataset2 <- rbind(dataset2,datarec2,deparse.level = 0)
       datarec2 <- c(t,k,0,ncontrols2)
@@ -50,6 +55,7 @@ for (t in 1:seas2){
 
 colnames(dataset) <- c('time','sincevacc','case','count')
 dataset <- data.frame(dataset)
+sincevacc <- dataset$sincevacc
 dataset$sincevacc <- factor(dataset$sincevacc)
 
 colnames(dataset2) <- c('time','sincevacc','case','count')

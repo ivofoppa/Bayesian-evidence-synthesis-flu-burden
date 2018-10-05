@@ -2,75 +2,87 @@ studydata0 <- array(0,dim = c(seas,1 + 2 * nvaccat + 2))
 studydata20 <- array(0,dim = c(seas,1 + 2 * nvaccat + 2))
 
 while (time <= seas + prevdur){
-  ## virus 1
-  p1inf <- pSE(r10,I1)
-  
-  inf11nv <- rbinom(1, S1nv, p1inf)
-  inf21nv <- rbinom(1, S2nv, p1inf)
-  inf01nv <- rbinom(1, S0nv, p1inf)
-  inf121nv <- rbinom(1, S12nv, p1inf)
-  
-  inf11v <- sapply(S1v, function(sv) rbinom(1, sv, p1inf))
-  inf11v2 <- sapply(seq_along(inf11v), function(k) ifelse(k <= (time - prevdur), 0, inf11v[k]))
-  inf121v <- sapply(S12v, function(sv) rbinom(1, sv, p1inf))
-  inf121v2 <- sapply(seq_along(inf121v), function(k) ifelse(k <= (time - prevdur), 0, inf11v[k]))
-  
-  rem1nv <- rbinom(1,I1nv,prem)
-  rem1v <- sapply(I1v, function(iv) rbinom(1,iv, prem))
-  ## Updating # susceptibles, because used again for virus 2
+  pinf <- pSI(r10,I1,r20,I2) ## for fully susceptible
+  pinf1 <- pSI(r10,I1,r20,0) ## for type 1 vacc.
+  pinf2 <- pSI(r10,0,r20,I2) ## for type 2 vacc.
   ## unvaccinated
-  S1nv <- S1nv - inf11nv
-  S2nv <- S2nv - inf21nv
-  S0nv <- S0nv - inf01nv
-  S12nv <- S12nv - inf121nv
+  inf1nvls <- rmultinom(1, S1nv, pinf)
+  inf2nvls <- rmultinom(1, S2nv, pinf)
+  inf0nvls <- rmultinom(1, S0nv, pinf)
+  inf12nvls <- rmultinom(1, S12nv, pinf)
   ## vaccinated
-  S1v <- S1v - inf11v
-  S12v <- S12v - inf121v
+  inf1varr <- sapply(S1v, function(s1v) rmultinom(1, s1v, pinf1))
+  inf2varr <- sapply(S2v, function(s2v) rmultinom(1, s2v, pinf2))
+  inf12varr <- sapply(S12v, function(s12v) rmultinom(1, s12v, pinf))
   
+  ## unvaccinated
+  ### virus 1
+  inf11nv <- inf1nvls[1]
+  inf21nv <- inf2nvls[1]
+  inf01nv <- inf0nvls[1]
+  inf121nv <- inf12nvls[1]
+  ### virus 2
+  inf12nv <- inf1nvls[2]
+  inf22nv <- inf2nvls[2]
+  inf02nv <- inf0nvls[2]
+  inf122nv <- inf12nvls[2]
+  ### updating susceptibles
+  S1nv <- inf1nvls[3]
+  S2nv <- inf2nvls[3]
+  S0nv <- inf0nvls[3]
+  S12nv <- inf12nvls[3]
+  
+  ## vaccinated
+  ### virus 1
+  inf11v <- inf1varr[1,]
+  inf11v2 <- sapply(seq_along(inf11v), function(k) ifelse(k <= (time - prevdur), 0, inf11v[k]))
+  
+  inf121v <- inf12varr[1,]
+  inf121v2 <- sapply(seq_along(inf121v), function(k) ifelse(k <= (time - prevdur), 0, inf121v[k]))
+  
+  ### virus 2
+  inf22v <- inf2varr[2,]
+  inf22v2 <- sapply(seq_along(inf22v), function(k) ifelse(k <= (time - prevdur), 0, inf22v[k]))
+  
+  inf122v <- inf12varr[2,]
+  inf122v2 <- sapply(seq_along(inf122v), function(k) ifelse(k <= (time - prevdur), 0, inf122v[k]))
+  
+  ### updating susceptibles
+  S1v <- inf1varr[3,]
+  S2v <- inf2varr[3,]
+  S12v <- inf12varr[3,]
+
   ## for plotting purposes ...
   I1ls <- c(I1ls,sum(inf11v) + sum(inf121v) + inf11nv + inf21nv + inf01nv + inf121nv)  
   ## virus 2
-  p2inf <- pSE(r20,I2)
-  
-  inf12nv <- rbinom(1, S1nv, p2inf)
-  inf22nv <- rbinom(1, S2nv, p2inf)
-  inf02nv <- rbinom(1, S0nv, p2inf)
-  inf122nv <- rbinom(1, S12nv, p2inf)
-  
-  inf22v <- sapply(S2v, function(sv) rbinom(1, sv, p2inf))
-  inf22v2 <- sapply(seq_along(inf22v), function(k) ifelse(k <= (time - prevdur), 0, inf22v[k]))
-  inf122v <- sapply(S12v, function(sv) rbinom(1, sv, p2inf))
-  inf122v2 <- sapply(seq_along(inf122v), function(k) ifelse(k <= (time - prevdur), 0, inf11v[k]))
-  
+  I2ls <- c(I2ls,sum(inf22v) + sum(inf122v) + inf12nv + inf22nv + inf02nv + inf122nv)  
+
+  ## updating other states: Infections with virus 1
+  I1nv <- I1nv + inf11nv + inf21nv + inf01nv + inf121nv
+  I1v <- I1v + inf11v + inf121v
+  ## updating other states: Infections with virus 2
+  I2nv <- I2nv + inf12nv + inf22nv + inf02nv + inf122nv
+  I2v <- I2v + inf22v + inf122v
+  ## updating states: Infections with either virus
+  ## numbers removed from virus 1 infectious
+  rem1nv <- rbinom(1,I1nv,prem)
+  rem1v <- sapply(I1v, function(iv) rbinom(1,iv, prem))
+  ## numbers removed from virus 2 infectious
   rem2nv <- rbinom(1,I2nv,prem)
   rem2v <- sapply(I2v, function(iv) rbinom(1,iv, prem))
-  ## Updating # susceptibles
-  ## unvaccinated
-  S1nv <- S1nv - inf12nv
-  S2nv <- S2nv - inf22nv
-  S0nv <- S0nv - inf02nv
-  S12nv <- S12nv - inf122nv
-  ## vaccinated
-  S2v <- S2v - inf22v
-  S12v <- S12v - inf122v
-  
-  ## for plotting purposes ...
-  I2ls <- c(I2ls,sum(inf22v) + sum(inf122v) + inf12nv + inf22nv + inf02nv + inf122nv)  
-  #########################################################################################
-  ## updating other states: Infections with virus 1
-  I1nv <- I1nv + inf11nv + inf21nv + inf01nv + inf121nv - rem1nv
-  I1v <- I1v + inf11v + inf121v - rem1v
-  ## updating other states: Infections with virus 2
-  I2nv <- I2nv + inf12nv + inf22nv + inf02nv + inf122nv - rem2nv
-  I2v <- I2v + inf22v + inf122v - rem2v
-  ## updating states: Infections with either virus
+  ## updating infections with removals
+  I1nv <- I1nv - rem1nv
+  I1v <- I1v - rem1v
+  I2nv <- I2nv- rem2nv
+  I2v <- I2v - rem2v
+  ## numbers removed from virus 2 infectious
   Rnv <- Rnv + rem1nv + rem2nv
   Rv <- Rv + rem1v + rem2v
   
   I1 <- sum(c(I1nv,I1v))
   I2 <- sum(c(I2nv,I2v))
   ### Interrupt evaluation if no more transmission
-  if (I1==0 & I2==0){
+  if (I1==0 & I2==0 | is.na(I1) | is.na(I2)){
     break()
   }
   ###################################################################################################
@@ -92,7 +104,7 @@ while (time <= seas + prevdur){
   controlsls2 <- c(controlsnv,sapply(seq_along(vaccdelim[-1]), function(x) sum(controlsvsum2[vaccdelim[x] : vaccdelim[x + 1]])))
   
   studydata0[time - prevdur,] <- c(time - prevdur,casesls,controlsls)
-studydata20[time - prevdur,] <- c(time - prevdur,casesls2,controlsls2)
+  studydata20[time - prevdur,] <- c(time - prevdur,casesls2,controlsls2)
   ###################################################################################################
   ### Vaccination: proceeding time since vacc. and adding new vaccinees
   pvacc <- 1 - exp(-v[time]) ## vaccination uptake at this time

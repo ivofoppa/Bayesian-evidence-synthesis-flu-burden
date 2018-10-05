@@ -1,3 +1,21 @@
+library(binhf)
+library(survival)
+Ntot <- 2000000
+
+pSI <- function(r01,I1,r02,I2){ ## infection probability
+  beta1 <- r01 * delta
+  beta2 <- r02 * delta
+  if((beta1 * I1 + beta2 * I2)==0){
+    return (c(0,0,1))
+  } else {
+    lambda <- (beta1 * I1 + beta2 * I2) / Ntot
+    pinf <- as.numeric(1-exp(-lambda))
+    p1 <- beta1*I1/(beta1*I1 + beta2*I2)
+    p2 <- 1 - p1
+    return (c(pinf*p1,pinf*p2,1 - pinf))
+  }
+}
+
 vdurls <- 1:vdur
 
 raw_vls <- sapply(vdurls,function(x) dnorm(x,vdur/2,vdur/5)) ## Normally distributed vacc uptake
@@ -5,6 +23,7 @@ s1 <- -log(vacc1)
 v0 <- raw_vls/sum(raw_vls) * s1 ## scaled right
 v <- c(v0,rep(0,seas + prevdur - vdur))
 ###################################################################################################
+prem <- 1 - exp(-delta) ## Daily removal probability
 ###################################################################################################
 vaccdelim <- unique(c(seq(1,seas + prevdur,vaccint),seas + prevdur))
 nvaccat <- length(vaccdelim) - 1 ## number of time-since-vacc categories
@@ -132,18 +151,17 @@ I1v <- I1v + inf11v + inf121v
 ## updating states: Infections with virus 2
 I2nv <- I2nv + inf12nv + inf22nv + inf02nv + inf122nv
 I2v <- I2v + inf22v + inf122v
-## updating states: Infections with either virus
+
+## Updating # susceptibles
 ## unvaccinated
 S1nv <- S1nv - inf11nv - inf12nv
 S2nv <- S2nv - inf21nv - inf22nv
 S0nv <- S0nv - inf01nv - inf02nv
 S12nv <- S12nv - inf121nv - inf122nv
-Rnv <- Rnv
 ## vaccinated
 S1v <- S1v - inf11v
 S2v <- S2v - inf22v
 S12v <- S12v - inf121v - inf122v
-Rv <- Rv
 
 I1 <- sum(c(I1nv,I1v))
 I2 <- sum(c(I2nv,I2v))
