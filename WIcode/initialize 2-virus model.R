@@ -17,11 +17,14 @@ pSI <- function(r01,I1,r02,I2){ ## infection probability
 }
 
 vdurls <- 1:vdur
-
-raw_vls <- sapply(vdurls,function(x) dnorm(x,vdur/2,vdur/5)) ## Normally distributed vacc uptake
-s1 <- -log(vacc1)
-v0 <- raw_vls/sum(raw_vls) * s1 ## scaled right
-v <- c(v0,rep(0,seas + prevdur - vdur))
+if (vacc1 !=0){
+  raw_vls <- sapply(vdurls,function(x) dnorm(x,vdur/2,vdur/5)) ## Normally distributed vacc uptake
+  s1 <- -log(vacc1)
+  v0 <- raw_vls/sum(raw_vls) * s1 ## scaled right
+  v <- c(v0,rep(0,seas + prevdur - vdur))
+} else {
+  v <- c(rep(0,seas + prevdur))
+}
 ###################################################################################################
 prem <- 1 - exp(-delta) ## Daily removal probability
 ###################################################################################################
@@ -166,4 +169,4 @@ S12v <- S12v - inf121v - inf122v
 I1 <- sum(c(I1nv,I1v))
 I2 <- sum(c(I2nv,I2v))
 
-I1ls <- I2ls <- NULL
+I1ls <- I2ls <- kls <- NULL

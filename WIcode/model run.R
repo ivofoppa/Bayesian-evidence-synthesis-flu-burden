@@ -56,7 +56,11 @@ while (time <= seas + prevdur){
   I1ls <- c(I1ls,sum(inf11v) + sum(inf121v) + inf11nv + inf21nv + inf01nv + inf121nv)  
   ## virus 2
   I2ls <- c(I2ls,sum(inf22v) + sum(inf122v) + inf12nv + inf22nv + inf02nv + inf122nv)  
-
+  ## list of "k factors'
+  kfact <- (sum(S1v + S12v)*r10*delta*I1 + sum(S2v + S12v)*r20*delta*I2)*(S1nv + S2nv + S0nv + S12nv)/
+    (sum(S1v + S2v + S12v))/
+    ((S1nv + S2nv + S0nv + S12nv)*r10*delta*I1 + (S1nv + S2nv + S0nv + S12nv)*r20*delta*I2)
+  kls <- c(kls,kfact)
   ## updating other states: Infections with virus 1
   I1nv <- I1nv + inf11nv + inf21nv + inf01nv + inf121nv
   I1v <- I1v + inf11v + inf121v

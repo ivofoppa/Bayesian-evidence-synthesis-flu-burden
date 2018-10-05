@@ -84,16 +84,16 @@ for (t in 1:seas2){
   ncontrolsnv <- rbinom(1,nnoncasesnv,pcontrol)
   # ncontrolsv <- nnoncasesv
   # ncontrolsnv <- nnoncasesnv
-  
+  late <- ifelse(t > seas2/2,1,0)
   if (ncasesv >= 5 & ncasesnv >= 5){
-    datarec <- c(t,1,ncasesv,ncontrolsv)
+    datarec <- c(t,1,ncasesv,ncontrolsv,late)
     dataset3 <- rbind(dataset3,datarec,deparse.level = 0)
-    datarec <- c(t,0,ncasesnv,ncontrolsnv)
+    datarec <- c(t,0,ncasesnv,ncontrolsnv,late)
     dataset3 <- rbind(dataset3,datarec,deparse.level = 0)
     
     veest <- 1 - ncasesv * ncontrolsnv / (ncasesnv * ncontrolsv)
     VEls <- c(VEls, veest)
   }
 }
-colnames(dataset3) <- c('time','vacc','cases','controls')
+colnames(dataset3) <- c('time','vacc','cases','controls','late')
 dataset3 <- data.frame(dataset3)
