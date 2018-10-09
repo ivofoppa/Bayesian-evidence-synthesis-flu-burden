@@ -1,7 +1,7 @@
 ## Discrete stochastic transmission model with unimdal vaccination uptake, two viruses, all-or-none protection
 
 r10 <- 1.8
-r20 <- 1.5
+r20 <- 1.7
 delta <- 1/4 ## infectious period
 
 seas <- 500 ## Number of days in epidemic
@@ -22,14 +22,15 @@ prevdur <- 100 ## number of days of vaccination campaigh before transmission
 vdur <- 300 ### duration of vaccination
 vaccint <- 60
 ccratio <- Inf ## control-case ratio
-ccratio <- 3 ## control-case ratio
+# ccratio <- 3 ## control-case ratio
 ###################################################################################################
 ##  Seed infections ###############################################################################
 ###################################################################################################
-inf1num <- 90 ## Number of seed infections
-inf2num <- 10 ## Number of seed infections
+inf1num <- 80 ## Number of seed infections
+inf2num <- 20 ## Number of seed infections
 ###################################################################################################
 ## Setting initial values etc.
+setwd('C:/Users/IFoppa/Documents/GitHub/Waning-Immunity-artefact/WIcode')
 source('initialize 2-virus model.R') ## run initialization code
 
 ## Running model
@@ -47,6 +48,9 @@ lines(I2ls,col = 'red')
 cond_logist <- clogit(case ~ sincevacc + strata(time),weights = count, data = dataset,method = 'approximate')
 summary(cond_logist)
 
+cond_logist1 <- clogit(case ~ sincevacc + strata(time),weights = count, data = dataset1,method = 'approximate')
+summary(cond_logist1)
+
 cond_logist2 <- clogit(case ~ sincevacc + strata(time),weights = count, data = dataset2,method = 'approximate')
 summary(cond_logist2)
 
@@ -61,7 +65,8 @@ summary(logist2)
 ######################################################################################################
 ######################################################################################################
 
-plot(VEls)
+plot(VEls[1:seas2])
+lines(trueVEls[1:seas2],col = 'red')
 
 filepath <- paste0('C:/Users/VOR1/Documents/GitHub/Waning-Immunity-artefact/WIwriteup/WIplots/simul_adj_',prevdur,'_',vdur,'.RData')
 save(dataset,dataset2,studydata,studydata2,file = filepath)

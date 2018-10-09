@@ -1,4 +1,5 @@
 studydata0 <- array(0,dim = c(seas,1 + 2 * nvaccat + 2))
+studydata10 <- array(0,dim = c(seas,1 + 2 * nvaccat + 2))
 studydata20 <- array(0,dim = c(seas,1 + 2 * nvaccat + 2))
 
 while (time <= seas + prevdur){
@@ -100,14 +101,18 @@ while (time <= seas + prevdur){
   casesls2 <- c(infnv,sapply(seq_along(vaccdelim[-1]), function(x) sum(infv2[vaccdelim[x] : vaccdelim[x + 1]])))
   
   controlsvsum <- S1v + S2v + S0v + S12v + Rv
+  controlsvsum1 <- S1v + S2v + S0v + S12v ### "True" comparison: only susceptibles
   controlsvsum2 <- sapply(seq_along(controlsvsum), function(k) ifelse(k <= (time - prevdur), 0, controlsvsum[k]))
   
   controlsnv <- S1nv + S2nv + S0nv + S12nv + Rnv
+  controlsnv1 <- S1nv + S2nv + S0nv + S12nv
   
   controlsls <- c(controlsnv,sapply(seq_along(vaccdelim[-1]), function(x) sum(controlsvsum[vaccdelim[x] : vaccdelim[x + 1]])))
+  controlsls1 <- c(controlsnv1,sapply(seq_along(vaccdelim[-1]), function(x) sum(controlsvsum1[vaccdelim[x] : vaccdelim[x + 1]])))
   controlsls2 <- c(controlsnv,sapply(seq_along(vaccdelim[-1]), function(x) sum(controlsvsum2[vaccdelim[x] : vaccdelim[x + 1]])))
   
   studydata0[time - prevdur,] <- c(time - prevdur,casesls,controlsls)
+  studydata10[time - prevdur,] <- c(time - prevdur,casesls,controlsls1)
   studydata20[time - prevdur,] <- c(time - prevdur,casesls2,controlsls2)
   ###################################################################################################
   ### Vaccination: proceeding time since vacc. and adding new vaccinees

@@ -1,8 +1,5 @@
 ## test
 library(deSolve)
-bfolder <- "C:/Users/vor1/Dropbox/Misc work/Waning immunity/WI git project/"
-setwd(paste0(bfolder,"WIwriteup"))
-
 ## asign values to parameters
 Ntot <- 2000000
 vacc0 <- 0.38
@@ -129,8 +126,8 @@ save.image(file = filepath)
 ###################################################################################################cols <- rainbow(length(VErnge))
 ### Epi curves
 cols <- rainbow(length(VErnge))
-setwd('C:/Users/IFoppa/Documents/GitHub/Waning-Immunity-artefact/WIwriteup/WIplots')
-
+setwd('C:/Users/IFoppa/Documents/GitHub/Waning-Immunity-artefact/WIpresentation/WIgraphs')
+pdf('VE_2_virus.pdf',paper='USr',height = 8.5,width = 11) 
 pdf('Epicurves.pdf',paper='USr',height = 8.5,width = 11) 
 plot((0:maxtime)*dt,casearr[[1]][timesselList[[1]]],type = 'l', col = cols[1], ylab = 'Incidence', xlab = 'Day')
 
