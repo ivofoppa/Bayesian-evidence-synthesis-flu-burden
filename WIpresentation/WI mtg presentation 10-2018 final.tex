@@ -82,24 +82,45 @@ Lipsitch editiorial (CID, 2018):
 \section{Results}
 \subsection{``Leaky''}
 \begin{frame}{First scenario: ``Leaky'' vaccine}
+Vaccination coverage: 0.47, constant; $R_0=1.6$; $\delta = 0.25$
 \centering
-\includegraphics[width=.7\textwidth]{VEtime.pdf}
+\includegraphics[width=.8\textwidth]{VEtime.pdf}
 \end{frame}
 %
 %
 \begin{frame}{Rel. Bias}
-\includegraphics[width=.7\textwidth]{VEbias_rel.pdf}
+\includegraphics[width=.9\textwidth]{VEbias_rel.pdf}
 \end{frame}
 %
 %
-\subsection{``All-or-none'', 2 viruses}
+\subsection{``All-or-none'', 2 viruses, ODE simulation}
 \begin{frame}{Second scenario: 2 viruses, ``all-or-none''}
+Vaccination coverage: 0.3; $R_0=1.25, 1.75;$; $\delta = 0.33$
 \centering
-		\includegraphics[width=.7\textwidth]{VE_2_virus.pdf}
+\includegraphics[width=.8\textwidth]{VE_2_virus.pdf}
 \end{frame}
 %
 \begin{frame}{Time-dependent ``k''}
 \centering
-\includegraphics[width=.7\textwidth]{k_time.pdf}
+\includegraphics[width=.9\textwidth]{k_time.pdf}
 \end{frame}
+%
+\subsection{``All-or-none'', 2 viruses, stochastic simulation, time-since-vaccination}
+\begin{itemize}
+	\item Stochastic simulation with time-since vaccination (TSV)
+	\item Normally-dist. vaccination uptake (cumm. 0.47), starting 100 days before transmission, continuing until 200 days after seeding; $R_0=1.8,1.7$; Proportion of population susceptible (after vacc.) to virus 1, 2, neither or both: $0.2,0.4,0.3,0.1$
+	\item All infections used as cases, control-case ratio 1:3
+	\item Conditional logistic regression, with time since vaccination: $< 60$, $61-120$,$121-180$,$>181$ days; conditioning on day of enrollment
+	
+\end{itemize}
+\centering
+\begin{tabular}{cc}
+Variable & OR\\
+\hline
+TSV 1 & Ref.\\
+TSV 2 & 3.62\\
+TSV 3 & 2.13 \\
+TSV 4 & 5.92 \\
+\hline
+\end{tabular}
 \end{document}

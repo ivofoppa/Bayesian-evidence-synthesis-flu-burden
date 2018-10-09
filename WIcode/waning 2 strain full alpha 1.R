@@ -68,7 +68,7 @@ dynv1 <- diff(ynv1new)
 dynv2 <- diff(ynv2new)
 dyv1 <- diff(yv1new)
 
-selind <- which((dxv + dxv2 + dxnv)>0)
+selind <- which((dxv + dxnv)>0)
 
 cases1 <- dyv1 + dynv1; cases1 <- cases1[selind]
 cases2 <- dynv2; cases2 <- cases2[selind]
@@ -128,7 +128,7 @@ y3tck2lab <- sapply(round(seq(0,a3,a3/5)), function(x) toString(x))
 
 # par(mar = c(5,4,4,5))
 
-setwd('C:/Users/IFoppa/Documents/GitHub/Waning-Immunity-artefact/WIpresentations/WIgraphs')
+setwd('C:/Users/IFoppa/Documents/GitHub/Waning-Immunity-artefact/WIpresentation/WIgraphs')
 pdf('VE_2_virus.pdf',paper='USr',height = 8.5,width = 11) 
 plot(times1[-c(1:100)],VEls[-c(1:100)],type = 'l',ylim = c(min(VEls,0),VEmax),ylab = 'VE',xlab = 'Day',
      main = '',lwd = 2)

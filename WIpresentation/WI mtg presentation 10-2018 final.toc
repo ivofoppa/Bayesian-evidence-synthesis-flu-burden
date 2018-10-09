@@ -3,3 +3,6 @@
 \beamer@sectionintoc {2}{Methdological sources of ``waning effect''}{2}{0}{2}
 \beamer@subsectionintoc {2}{1}{Approach}{16}{0}{2}
 \beamer@sectionintoc {3}{Results}{22}{0}{3}
+\beamer@subsectionintoc {3}{1}{``Leaky''}{22}{0}{3}
+\beamer@subsectionintoc {3}{2}{``All-or-none'', 2 viruses, ODE simulation}{24}{0}{3}
+\beamer@subsectionintoc {3}{3}{``All-or-none'', 2 viruses, stochastic simulation, time-since-vaccination}{26}{0}{3}

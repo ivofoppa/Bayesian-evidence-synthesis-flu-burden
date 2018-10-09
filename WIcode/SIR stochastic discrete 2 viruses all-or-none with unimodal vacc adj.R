@@ -22,7 +22,7 @@ prevdur <- 100 ## number of days of vaccination campaigh before transmission
 vdur <- 300 ### duration of vaccination
 vaccint <- 60
 ccratio <- Inf ## control-case ratio
-# ccratio <- 3 ## control-case ratio
+ccratio <- 3 ## control-case ratio
 ###################################################################################################
 ##  Seed infections ###############################################################################
 ###################################################################################################
