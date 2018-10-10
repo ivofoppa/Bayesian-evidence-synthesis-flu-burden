@@ -1,7 +1,7 @@
 ## Discrete stochastic transmission model with unimdal vaccination uptake, two viruses, all-or-none protection
 bfolder <- 'C:/Users/VOR1/Documents/GitHub/' ## Define root path (where repository)
 r10 <- 1.8
-r20 <- 1.7
+r20 <- 1.
 delta <- 1/4 ## infectious period
 
 seas <- 500 ## Number of days in epidemic
@@ -19,15 +19,15 @@ vs12 <- 1 - vs1 - vs2 - vs0 ## proportion of subject who, if vacc. remain susc. 
 # r20 <- r10 * fac2/fac1
 
 prevdur <- 100 ## number of days of vaccination campaigh before transmission
-vdur <- 300 ### duration of vaccination
+vdur <- 200 ### duration of vaccination
 vaccint <- 60
 ccratio <- Inf ## control-case ratio
-ccratio <- 3 ## control-case ratio
+# ccratio <- 3 ## control-case ratio
 ###################################################################################################
 ##  Seed infections ###############################################################################
 ###################################################################################################
-inf1num <- 80 ## Number of seed infections
-inf2num <- 20 ## Number of seed infections
+inf1num <- 90 ## Number of seed infections
+inf2num <- 10 ## Number of seed infections
 ###################################################################################################
 ## Setting initial values etc.
 fpath <- paste0(bfolder,'Waning-Immunity-artefact/WIcode')
@@ -46,14 +46,13 @@ plot(I1ls, ylim = c(0,max(c(I1ls,I2ls))),type = 'l',col = 'blue')
 lines(I2ls,col = 'red')
 ######################################################################################################
 ######################################################################################################
-
-cond_logist <- clogit(case ~ sincevacc + strata(time),weights = count, data = dataset,method = 'approximate')
-summary(cond_logist)
-
+# cond_logist <- clogit(case ~ sincevacc + strata(time),weights = count, data = dataset,method = 'approximate')
+# summary(cond_logist)
+# 
 cond_logist1 <- clogit(case ~ sincevacc + strata(time),weights = count, data = dataset1,method = 'approximate')
 summary(cond_logist1)
 
-cond_logist2 <- clogit(case ~ sincevacc + strata(time),weights = count, data = dataset2,method = 'approximate')
+cond_logist2 <- clogit(case ~ sincevacc + strata(time),weights = count, data = dataset12,method = 'approximate')
 summary(cond_logist2)
 
 logist1 <- glm(case ~ sincevacc,weights = count, data = dataset,family = binomial(link = 'logit'))

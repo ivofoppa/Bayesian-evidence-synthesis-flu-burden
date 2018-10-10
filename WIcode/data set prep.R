@@ -57,19 +57,19 @@ for (t in 1:seas2){
   for (k in 1:4){
     if (k < 4){
       ncases <- studydata[t,2 + k]
-      nnoncases <- studydata[t,nvaccat + 2 + k]
+      nnoncases <- studydata[t,nvaccat + 3 + k]
       
       ncases2 <- studydata2[t,2 + k]
-      nnoncases2 <- studydata2[t,nvaccat + 2 + k]
+      nnoncases2 <- studydata2[t,nvaccat + 3 + k]
       
       ncontrols <- rbinom(1,nnoncases,pcontrol)
       ncontrols2 <- rbinom(1,nnoncases2,pcontrol2)
     } else {
-      ncases <- sum(studydata[t,(2 : nvaccat)])
-      nnoncases <- sum(studydata[t,(nvaccat + 3):((2 * nvaccat + 3))])
+      ncases <- sum(studydata[t,(6 : (nvaccat + 2))])
+      nnoncases <- sum(studydata[t,(nvaccat + 7):((2 * nvaccat + 3))])
 
-      ncases2 <- sum(studydata2[t,(2 : nvaccat)])
-      nnoncases2 <- sum(studydata2[t,(nvaccat + 3):((2 * nvaccat + 3))])
+      ncases2 <- sum(studydata2[t,(6 : (nvaccat + 2))])
+      nnoncases2 <- sum(studydata2[t,(nvaccat + 7):((2 * nvaccat + 3))])
       
       ncontrols <- rbinom(1,nnoncases,pcontrol)
       ncontrols2 <- rbinom(1,nnoncases2,pcontrol2)
