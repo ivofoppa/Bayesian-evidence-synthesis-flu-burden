@@ -42,20 +42,20 @@ Lipsitch editiorial (CID, 2018):
 \begin{itemize}
 	\item<2->[] ``Even if the vaccine effect does not wane over time, then such waning will nonetheless appear to occur in most studies [\ldots]'' (``leaky'' vaccines)
 	\item<3->[] This will happen if:\begin{enumerate}
-		\item<4-> ``there is heterogeneous risk of becoming infected within those who are vaccinated''
-		\item<5-> ``some trial participants during the course of the trial become infected but are not counted as cases'' \uncover<6->{\textbf{$\leftarrow$ Not relevant to TND studies!}} 
-		\item<7-> What if the vaccine is not leaky?
+		\item ``there is heterogeneous risk of becoming infected within those who are vaccinated''
+		\item ``some trial participants during the course of the trial become infected but are not counted as cases'' \uncover<4->{\textbf{$\leftarrow$ Not relevant to TND studies! But: }}\uncover<5->{Faster depletion of unvaccinated than vaccinated ($e^{-\Lambda_t} < e^{-\Lambda_t \theta}$), shifting the odds of case odds in vaccinated. }
+		\item<6-> What if the vaccine is not leaky?
 	\end{enumerate}
 \end{itemize}
 \end{frame}
 \begin{frame}{Vaccine models}
 \begin{itemize}
-\item ``Leaky'' model: Those susceptible before vaccination have a risk of $\lambda_1 = \lambda_0 k$ of becoming infected during a contact if an unvaccinated susceptible has risk $\lambda_0$. $\operatorname{VE}=1-\frac{\lambda_1}{\lambda_0} = k$
-\item<2-> ``All-or-none'' model: A proportion of those vaccinated becomes fully immunized against ``influenza virus'', while the rest remains fully susceptible
+\item ``Leaky'' model: Those susceptible before vaccination have a risk of $\lambda_1 = \lambda_0 \theta$ of becoming infected during a contact if an unvaccinated susceptible has risk $\lambda_0$. $\operatorname{VE}=1-\frac{\lambda_1}{\lambda_0} = 1 - \theta$
+\item<2-> ``All-or-none'' model: A proportion $\varphi$ of those vaccinated becomes fully immunized against ``influenza virus'', while the rest remains fully susceptible. $\operatorname{VE}= \varphi$
 \item<3-> Hybrid models: \begin{enumerate}
-	\item <4-> A \textbf{\emph{proportion}} of vaccinated develops ``leaky'' immunity (Lewnard, 2018)
-	\item <5-> ``Leaky'' model with time-variant $k$ \uncover<7->{$\bm{\leftarrow}$}
-	\item <6-> \ldots
+	\item A \textbf{\emph{proportion} $\varphi$} of vaccinated develop \textbf{\emph{``leaky'' immunity}} (Lewnard, 2018) $\operatorname{VE} = \varphi (1 - \theta)$
+	\item ``Leaky'' model with time-variant $\theta$ \uncover<4->{$\bm{\leftarrow}$}
+	\item  \ldots
 \end{enumerate}
 \end{itemize}
 \end{frame}
@@ -65,15 +65,15 @@ Lipsitch editiorial (CID, 2018):
 \begin{frame}{Approach}
 %
 \begin{enumerate}
-	\item 	\begin{itemize}
-		\item<2-> Simulation of seasonal influenza epidemics using simple SIR ODE models
-		\item<3-> Implement two scenarios (``leaky'', ''all-or-none'' with two viruses)
-		\item<4-> Use numerical solutions to ODEs to generate TND data
-		\item<5-> Calculate VE ``estimates'' and true VE
+	\item<2-> 	\begin{itemize}
+		\item Simulation of seasonal influenza epidemics using simple SIR ODE models
+		\item Implement two scenarios (``leaky'', ''all-or-none'' with two viruses)
+		\item Use numerical solutions to ODEs to generate TND data
+		\item Calculate VE ``estimates'' and true VE
 	\end{itemize}
-	\item<6-> 	\begin{itemize}
+	\item<3-> 	\begin{itemize}
 	\item Simulation of seasonal influenza epidemics using a stochastic SIR model, keeping track of time since vaccination
-	\item Implement ''all-or-none'' with two viruses: A certain proportion of the population 
+	\item Implement ''all-or-none'' with two viruses: A certain proportion of the population, if vaccinated, remains susceptible to virus 1, 2, 1 and 2 or neither 
 	\item Use Ray's analytic approach (only vaccinees, conditional logistic regression)
 \end{itemize}
 \end{enumerate}
@@ -95,25 +95,31 @@ Vaccination coverage: 0.47, constant; $R_0=1.6$; $\delta = 0.25$
 %
 \subsection{``All-or-none'', 2 viruses, ODE simulation}
 \begin{frame}{Second scenario: 2 viruses, ``all-or-none''}
-Vaccination coverage: 0.3; $R_0=1.25, 1.75;$; $\delta = 0.33$
+Vaccination coverage: 0.3; $R_0=1.25, 1.75$; $\delta = 0.33$
 \centering
 \includegraphics[width=.8\textwidth]{VE_2_virus.pdf}
 \end{frame}
 %
-\begin{frame}{Time-dependent ``k''}
+\begin{frame}{Time-dependent $\theta$}
 \centering
-\includegraphics[width=.9\textwidth]{k_time.pdf}
+\includegraphics[width=.9\textwidth]{theta_time.pdf}
 \end{frame}
 %
 \subsection{``All-or-none'', 2 viruses, stochastic simulation, time-since-vaccination}
+\begin{frame}{``All-or-none'', 2 viruses, stochastic simulation, time-since-vaccination}
+
+{\footnotesize 
 \begin{itemize}
 	\item Stochastic simulation with time-since vaccination (TSV)
-	\item Normally-dist. vaccination uptake (cumm. 0.47), starting 100 days before transmission, continuing until 200 days after seeding; $R_0=1.8,1.7$; Proportion of population susceptible (after vacc.) to virus 1, 2, neither or both: $0.2,0.4,0.3,0.1$
-	\item All infections used as cases, control-case ratio 1:3
-	\item Conditional logistic regression, with time since vaccination: $< 60$, $61-120$,$121-180$,$>181$ days; conditioning on day of enrollment
-	
-\end{itemize}
+\item Normally-dist. vaccination uptake (cumm. 0.47), starting 100 days before transmission, continuing until 200 days after seeding; $R_0=1.8,1.7$; Proportion of population susceptible (after vacc.) to virus 1, 2, neither or both: $0.2,0.4,0.3,0.1$
+\item All infections used as cases, control-case ratio 1:3
+\item Conditional logistic regression, with time since vaccination: $< 60$, $61-120$,$121-180$,$>181$ days; conditioning on day of enrollment
+\item <2-> One simulation:
+\end{itemize} 
+}
+%
 \centering
+\uncover<3->{\scriptsize
 \begin{tabular}{cc}
 Variable & OR\\
 \hline
@@ -122,5 +128,9 @@ TSV 2 & 3.62\\
 TSV 3 & 2.13 \\
 TSV 4 & 5.92 \\
 \hline
-\end{tabular}
+\end{tabular} }
+\end{frame}
+%
 \end{document}
+
+

@@ -1,5 +1,5 @@
-## test
 library(deSolve)
+bfolder <- 'C:/Users/VOR1/Documents/GitHub/' ## Define root path (where repository)
 ## asign values to parameters
 Ntot <- 2000000
 vacc0 <- 0.38
@@ -119,14 +119,15 @@ timesselList <- lapply(seq_along(VErnge), function(x) seq(minsells[x],minsells[x
 ###################################################################################################
 ###  Saving workspace for use in Markdown document ################################################
 ###################################################################################################
-filepath <- 'C:/Users/IFoppa/Documents/GitHub/Waning-Immunity-artefact/WIwriteup/WIplots/workspace.RData'
-save.image(file = filepath)
+# filepath <- paste0(bfolder,'Waning-Immunity-artefact/WIwriteup/WIplots/workspace.RData')
+# save.image(file = filepath)
 # load(filepath)
 ###################################################################################################
 ###################################################################################################cols <- rainbow(length(VErnge))
 ### Epi curves
 cols <- rainbow(length(VErnge))
-setwd('C:/Users/IFoppa/Documents/GitHub/Waning-Immunity-artefact/WIpresentation/WIgraphs')
+fpath <- paste0(bfolder,'Waning-Immunity-artefact/WIpresentation/WIgraphs')
+setwd(fpath)
 pdf('VE_2_virus.pdf',paper='USr',height = 8.5,width = 11) 
 pdf('Epicurves.pdf',paper='USr',height = 8.5,width = 11) 
 plot((0:maxtime)*dt,casearr[[1]][timesselList[[1]]],type = 'l', col = cols[1], ylab = 'Incidence', xlab = 'Day')

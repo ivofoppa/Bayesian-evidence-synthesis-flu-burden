@@ -1,5 +1,6 @@
 ### Investigating the presence of waning when all-or none effect with against specific influenza strains
 library(deSolve)
+bfolder <- 'C:/Users/VOR1/Documents/GitHub/' ## Define root path (where repository)
 ## asign values to parameters
 Ntot <- 20000000
 vacc <- 0.3
@@ -128,17 +129,19 @@ y3tck2lab <- sapply(round(seq(0,a3,a3/5)), function(x) toString(x))
 
 # par(mar = c(5,4,4,5))
 
-setwd('C:/Users/IFoppa/Documents/GitHub/Waning-Immunity-artefact/WIpresentation/WIgraphs')
+fpath <- paste0(bfolder,'Waning-Immunity-artefact/WIpresentation/WIgraphs')
+setwd(fpath)
+
 pdf('VE_2_virus.pdf',paper='USr',height = 8.5,width = 11) 
 plot(times1[-c(1:100)],VEls[-c(1:100)],type = 'l',ylim = c(min(VEls,0),VEmax),ylab = 'VE',xlab = 'Day',
      main = '',lwd = 2)
 lines(times1[-c(1:100)],trueVEls[-c(1:100)], col = 'red')
 
-legend('left',c('Mesured VE','True VE'),col = c('black','red'),
+legend('left',c('Measured VE','True VE'),col = c('black','red'),
        lty = 1,bty = 'n',lwd = 2)
 dev.off()
 
-kls <- cases1/(cases1 + cases2)
-pdf('k_time.pdf',paper='USr',height = 8.5,width = 11) 
-plot(times1,kls,type = 'l',ylab = ' "k" ',xlab = 'Days',col = 'blue',lwd = 2,ylim = c(min(kls),1))
+thetals <- 1 - cases1/(cases1 + cases2)
+pdf('theta_time.pdf',paper='USr',height = 8.5,width = 11) 
+plot(times1,thetals,type = 'l',ylab = expression(theta),xlab = 'Days',col = 'blue',lwd = 2,ylim = c(0,max(thetals)))
 dev.off()
