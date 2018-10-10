@@ -1,5 +1,5 @@
 ## Discrete stochastic transmission model with unimdal vaccination uptake, two viruses, all-or-none protection
-
+bfolder <- 'C:/Users/VOR1/Documents/GitHub/' ## Define root path (where repository)
 r10 <- 1.8
 r20 <- 1.7
 delta <- 1/4 ## infectious period
@@ -30,7 +30,9 @@ inf1num <- 80 ## Number of seed infections
 inf2num <- 20 ## Number of seed infections
 ###################################################################################################
 ## Setting initial values etc.
-setwd('C:/Users/IFoppa/Documents/GitHub/Waning-Immunity-artefact/WIcode')
+fpath <- paste0(bfolder,'Waning-Immunity-artefact/WIcode')
+setwd(fpath)
+
 source('initialize 2-virus model.R') ## run initialization code
 
 ## Running model
