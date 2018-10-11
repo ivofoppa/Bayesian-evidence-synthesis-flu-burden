@@ -3,18 +3,18 @@ studydata10 <- array(0,dim = c(seas,1 + 2 * nvaccat + 2))
 studydata20 <- array(0,dim = c(seas,1 + 2 * nvaccat + 2))
 
 while (time <= seas + prevdur){
-  pinf <- pSI(r10,I1,r20,I2) ## for fully susceptible
+  pinf12 <- pSI(r10,I1,r20,I2) ## for fully susceptible
   pinf1 <- pSI(r10,I1,r20,0) ## for type 1 vacc.
   pinf2 <- pSI(r10,0,r20,I2) ## for type 2 vacc.
   ## unvaccinated
-  inf1nvls <- rmultinom(1, S1nv, pinf)
-  inf2nvls <- rmultinom(1, S2nv, pinf)
-  inf0nvls <- rmultinom(1, S0nv, pinf)
-  inf12nvls <- rmultinom(1, S12nv, pinf)
+  inf1nvls <- rmultinom(1, S1nv, pinf12)
+  inf2nvls <- rmultinom(1, S2nv, pinf12)
+  inf0nvls <- rmultinom(1, S0nv, pinf12)
+  inf12nvls <- rmultinom(1, S12nv, pinf12)
   ## vaccinated
   inf1varr <- sapply(S1v, function(s1v) rmultinom(1, s1v, pinf1))
   inf2varr <- sapply(S2v, function(s2v) rmultinom(1, s2v, pinf2))
-  inf12varr <- sapply(S12v, function(s12v) rmultinom(1, s12v, pinf))
+  inf12varr <- sapply(S12v, function(s12v) rmultinom(1, s12v, pinf12))
   
   ## unvaccinated
   ### virus 1

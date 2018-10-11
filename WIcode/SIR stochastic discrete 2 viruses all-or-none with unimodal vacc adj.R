@@ -1,7 +1,7 @@
 ## Discrete stochastic transmission model with unimdal vaccination uptake, two viruses, all-or-none protection
 bfolder <- 'C:/Users/VOR1/Documents/GitHub/' ## Define root path (where repository)
 r10 <- 1.8
-r20 <- 1.
+r20 <- 1.7
 delta <- 1/4 ## infectious period
 
 seas <- 500 ## Number of days in epidemic
@@ -19,7 +19,7 @@ vs12 <- 1 - vs1 - vs2 - vs0 ## proportion of subject who, if vacc. remain susc. 
 # r20 <- r10 * fac2/fac1
 
 prevdur <- 100 ## number of days of vaccination campaigh before transmission
-vdur <- 200 ### duration of vaccination
+vdur <- 250 ### duration of vaccination
 vaccint <- 60
 ccratio <- Inf ## control-case ratio
 # ccratio <- 3 ## control-case ratio

@@ -54,8 +54,8 @@ for (t in 1:seas2){
       dataset2 <- rbind(dataset2,datarec2,deparse.level = 0)
     }
   }
-  for (k in 1:4){
-    if (k < 4){
+  for (k in 1:nvaccat2){
+    if (k < nvaccat2){
       ncases <- studydata[t,2 + k]
       nnoncases <- studydata[t,nvaccat + 3 + k]
       
@@ -114,7 +114,6 @@ dataset2$sincevacc <- factor(dataset2$sincevacc)
 ######################################################################################################
 dataset3 <- NULL
 VEls <- trueVEls <- NULL
-ccratio <- 2
 for (t in 1:seas2){
   totcases <- sum(studydata[t,2:(nvaccat + 2)])
   totnoncases <- sum(studydata[t,(nvaccat + 3) : (1 * nvaccat + 3)])
