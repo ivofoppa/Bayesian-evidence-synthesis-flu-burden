@@ -1,5 +1,5 @@
 ## Discrete stochastic transmission model with unimdal vaccination uptake, two viruses, all-or-none protection
-bfolder <- 'C:/Users/VOR1/Documents/GitHub/' ## Define root path (where repository)
+bfolder <- 'C:/Users/ifoppa/Documents/GitHub/' ## Define root path (where repository)
 r10 <- 1.8
 r20 <- 1.7
 delta <- 1/4 ## infectious period
@@ -8,9 +8,9 @@ seas <- 500 ## Number of days in epidemic
 ### Generating the vaccination rate over time
 vacc1 <- 0.47 ## cumulative vaccination coverage
 
-vs1 <- .2 ## proportion of subject who, if vacc. remain susc. to virus 1
+vs1 <- .1 ## proportion of subject who, if vacc. remain susc. to virus 1
 vs2 <- .4 ## proportion of subject who, if vacc. remain susc. to virus 2
-vs0 <- .3 ## proportion of subject who, if vacc. remain susc. to neither virus
+vs0 <- .1 ## proportion of subject who, if vacc. remain susc. to neither virus
 vs12 <- 1 - vs1 - vs2 - vs0 ## proportion of subject who, if vacc. remain susc. to both viruses
 
 # ## scaling the second virus to about virus 1 transmissability
@@ -19,10 +19,11 @@ vs12 <- 1 - vs1 - vs2 - vs0 ## proportion of subject who, if vacc. remain susc. 
 # r20 <- r10 * fac2/fac1
 
 prevdur <- 100 ## number of days of vaccination campaigh before transmission
-vdur <- 250 ### duration of vaccination
+vdur <- 300 ### duration of vaccination
 vaccint <- 60
-ccratio <- Inf ## control-case ratio
-# ccratio <- 3 ## control-case ratio
+nvaccat2 <- 4 ## Number of time-since-vacc categories for analysis
+ccratio <- 3 ## control-case ratio
+ncrit <- 5 ## Min. required number of cases/controls per stratum
 ###################################################################################################
 ##  Seed infections ###############################################################################
 ###################################################################################################
@@ -54,6 +55,9 @@ summary(cond_logist1)
 
 cond_logist2 <- clogit(case ~ sincevacc + strata(time),weights = count, data = dataset12,method = 'approximate')
 summary(cond_logist2)
+
+cond_logist3 <- clogit(case ~ sincevacc + strata(time),weights = count, data = dataset3,method = 'approximate')
+summary(cond_logist3) ## sincevacc not a factor
 
 logist1 <- glm(case ~ sincevacc,weights = count, data = dataset,family = binomial(link = 'logit'))
 summary(logist1)
