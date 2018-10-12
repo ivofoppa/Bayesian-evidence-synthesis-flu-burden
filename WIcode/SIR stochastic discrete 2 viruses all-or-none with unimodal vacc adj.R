@@ -1,5 +1,6 @@
 ## Discrete stochastic transmission model with unimdal vaccination uptake, two viruses, all-or-none protection
-bfolder <- 'C:/Users/ifoppa/Documents/GitHub/' ## Define root path (where repository)
+# bfolder <- 'C:/Users/ifoppa/Documents/GitHub/' ## Define root path (where repository)
+bfolder <- 'C:/Users/vor1/Documents/GitHub/' ## Define root path (where repository)
 r10 <- 1.8
 r20 <- 1.7
 delta <- 1/4 ## infectious period
@@ -62,8 +63,8 @@ summary(cond_logist3) ## sincevacc not a factor
 logist1 <- glm(case ~ sincevacc,weights = count, data = dataset,family = binomial(link = 'logit'))
 summary(logist1)
 
-logist <- glm(cbind(cases,controls) ~ vacc, data = dataset3,family = binomial(link = 'logit'))
-summary(logist)
+logist2 <- glm(cbind(cases,controls) ~ vacc + late + late*vacc, data = dataset4,family = binomial(link = 'logit'))
+summary(logist2)
 
 logist2 <- glm(cbind(cases,controls) ~ vacc + late + late*vacc, data = dataset3,family = binomial(link = 'logit'))
 summary(logist2)

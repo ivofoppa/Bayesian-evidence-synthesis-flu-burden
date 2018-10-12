@@ -23,7 +23,7 @@ for (t in 1:length(seas21)){
   totcases <- sum(studydata[t,3:(nvaccat + 2)])
   totnoncases <- sum(studydata[t,(nvaccat + 4) : (1 * nvaccat + 3)])
   oddscontrol <- totcases/totnoncases * ccratio
-  pcontrol <- ifelse(oddscontrol * totnoncases > Ntot, 1, oddscontrol * totnoncases/Ntot)
+  pcontrol <- min(oddscontrol * totnoncases/Ntot,1)
 
   for (k in seq_along(vaccdelim[-1])){
     ncases <- studydata[t,2 + k]
@@ -67,7 +67,7 @@ for (t in 1:length(seas22)){
   totcases2 <- sum(studydata2[t,3:(nvaccat + 2)])
   totnoncases2 <- sum(studydata2[t,(nvaccat + 4) : (1 * nvaccat + 3)])
   oddscontrol2 <- totcases2/totnoncases2 * ccratio
-  pcontrol2 <- ifelse(oddscontrol2 * totnoncases2 > Ntot, 1, oddscontrol2 * totnoncases2/Ntot)
+  pcontrol2 <- min(oddscontrol2 * totnoncases2/Ntot,1)
   
   for (k in seq_along(vaccdelim[-1])){
     ncases2 <- studydata2[t,2 + k]
@@ -133,7 +133,8 @@ dataset2$sincevacc <- factor(dataset2$sincevacc)
 ######################################################################################################
 dataset4 <- NULL
 VEls <- trueVEls <- NULL
-for (t in 1:seas2){
+
+for (t in 1:length(seas21)){
   totcases <- sum(studydata[t,2:(nvaccat + 2)])
   totnoncases <- sum(studydata[t,(nvaccat + 3) : (2 * nvaccat + 3)])
   oddscontrol <- totcases/totnoncases * ccratio
@@ -152,11 +153,11 @@ for (t in 1:seas2){
   ncontrolsv2 <- nnoncasesv2
   ncontrolsnv2 <- nnoncasesnv2
 
-  late <- ifelse(t > seas2/2,1,0)
+  late <- ifelse(seas21[t] > tail(seas21,1)/2,1,0)
   if (ncasesv >= 5 & ncasesnv >= 5){
-    datarec <- c(t,1,ncasesv,ncontrolsv,late)
+    datarec <- c(seas21[t],1,ncasesv,ncontrolsv,late)
     dataset4 <- rbind(dataset4,datarec,deparse.level = 0)
-    datarec <- c(t,0,ncasesnv,ncontrolsnv,late)
+    datarec <- c(seas21[t],0,ncasesnv,ncontrolsnv,late)
     dataset4 <- rbind(dataset4,datarec,deparse.level = 0)
     
     veest <- 1 - ncasesv * ncontrolsnv / (ncasesnv * ncontrolsv)
