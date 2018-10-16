@@ -1,0 +1,1 @@
+d/da (integrate rho (1-r0) exp(-rho u) exp (-lambda0 (a - u)) du from 0 to a)

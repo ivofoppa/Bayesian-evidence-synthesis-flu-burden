@@ -1,0 +1,192 @@
+\documentclass{article}[11pt]
+\usepackage{amsmath,amssymb,authblk,bm,bm,caption,graphicx,hyperref,lscape,mathrsfs,setspace,subcaption,tabularx,tkz-graph,upgreek,url,amsthm}
+\usetikzlibrary{shapes.geometric}
+\usepackage[letterpaper, margin=2.5cm]{geometry}
+\usepackage[backend=biber,style=numeric,isbn=false,sorting=none,giveninits=true,terseinits=true]{biblatex}
+\DeclareNameAlias{default}{last-first}
+%\doublespacing
+\graphicspath{{graphics/}}
+\newcommand{\tablefolder}{./TCtables}
+\newcommand{\la}{\leftarrow}
+\newcommand{\ra}{\rightarrow}
+%\usepackage{draftwatermark}
+\newcommand{\footremember}[2]{%
+	\footnote{#2}
+	\newcounter{#1}
+	\setcounter{#1}{\value{footnote}}
+}
+\newcommand{\footrecall}[1]{%
+	\footnotemark[\value{#1}]%
+}
+
+\newcommand{\absdiv}[1]{%
+	\par\addvspace{.5\baselineskip}% adjust to suit
+	\noindent\textbf{#1}\quad\ignorespaces
+}
+
+\renewcommand*{\revsdnamepunct}{}
+
+\makeatletter
+\renewbibmacro*{name:last-first}[4]{%
+	\ifuseprefix
+	{\usebibmacro{name:delim}{#3#1}%
+		\usebibmacro{name:hook}{#3#1}%
+		\ifblank{#3}{}{%
+			\ifcapital
+			{\mkbibnameprefix{\MakeCapital{#3}}\isdot}
+			{\mkbibnameprefix{#3}\isdot}%
+			\ifpunctmark{'}{}{\bibnamedelimc}}%
+		\mkbibnamelast{#1}\isdot
+		\ifblank{#4}{}{\bibnamedelimd\mkbibnameaffix{#4}\isdot}%
+		%      \ifblank{#2}{}{\addcomma\bibnamedelimd\mkbibnamefirst{#2}\isdot}}% DELETED
+		\ifblank{#2}{}{\bibnamedelimd\mkbibnamefirst{#2}\isdot}}% NEW
+	{\usebibmacro{name:delim}{#1}%
+		\usebibmacro{name:hook}{#1}%
+		\mkbibnamelast{#1}\isdot
+		\ifblank{#4}{}{\bibnamedelimd\mkbibnameaffix{#4}\isdot}%
+		%      \ifblank{#2#3}{}{\addcomma}% DELETED
+		\ifblank{#2}{}{\bibnamedelimd\mkbibnamefirst{#2}\isdot}%
+		\ifblank{#3}{}{\bibnamedelimd\mkbibnameprefix{#3}\isdot}}}
+\makeatother
+
+
+%\SetWatermarkText{Confidential}
+%\SetWatermarkScale{5}
+% Sets the default location of pictures\fvset{fontsize=\normalsize} % The font size of all verbatim text can be changed here
+%
+\DeclareMathOperator{\logit}{logit}
+\DeclareMathOperator{\RR}{RR}
+\DeclareMathOperator{\OR}{OR}
+\DeclareMathOperator{\E}{E}
+%
+\addbibresource{waning.bib}
+\title{Commentary on Farrington, ``The Measurement and Interpretation of Age-Specific Vaccine Efficacy'' (1992)} 
+%
+\author{Ivo M Foppa}
+	%
+%
+%----------------------------------------------------------------------------------------
+\begin{document}
+	
+\maketitle%
+%
+%
+\section*{Background} 
+This important paper investigates the biases in two measures of vaccine effectiveness under two models of waning: According to model A (``all-or-none'') a proportion $1-R_0$ of all vaccinees is initially fully protected, but that proportion decays with age at a rate $\rho$. Accordingly, the probability to have lost vaccine protection by age $a$ is
+%
+\begin{equation}
+\label{eq:Ra}
+R(a) = 1-(1-R_0) e^{-\rho a}.
+\end{equation}
+%
+In contrast, Model B (``leaky'') assumes that vaccination reduces the force of infection in the vaccinees, compared to those not vaccinated, by an age-specific (declining) $R(a)$. Here, $R_0$ represents the inital reduction factor and not the initial failure probability as in model A.
+The two measures of vaccine effectiveness, $\operatorname{VE}_1(a)$ and $\operatorname{VE}_2(a)$ are defined by one minus the ratios of the instantaneous attack rates $p_v(a)$, $p_0(a)$ and the  probability densities of the ages at infection infection $u_v(a)$, $u_0(a)$, respectively (equations 3 \& 4). The instantaneous attack rates are defined as 
+%
+\begin{equation}
+\label{eq:inst_AR}
+p_v(a) = - \frac{1}{S_v(a)} \:\frac{dS_v(a)}{da},
+\end{equation}
+%
+corresponding to equation 1 with the index $v$ if vaccinated and $0$ if unvaccinated. The probability densities are given as
+%
+%
+\begin{equation}
+\label{eq:pd_age_inf}
+u_v(a) = - \frac{dS_v(a)}{da}
+\end{equation}
+%
+in equation 2, where $S_v(a)$ is the probability to ``survive'', i.e. to remain uninfected at age $a$. For failure rate $\lambda$,
+%
+\begin{equation}
+\label{eq:surv_prob}
+S_v(a) = e^{-\lambda a}
+\end{equation}
+%
+If $\lambda(a)$ is age-dependent the expression becomes
+%
+\begin{equation}
+\label{eq:surv_prob2}
+S_v(a) = e^{-\Lambda(a) a},
+\end{equation}
+%
+where $\Lambda(a) = \int_{u=0}^{a} \lambda(u) du$, i.e. the cumulative failure rate.
+
+In Appendix A, Farrington derives the expressions for $\operatorname{VE}_1(a)$ and $\operatorname{VE}_2(a)$ in Table 1, which give rise to the graphs of Figures 1 \& 2.
+Specifically, she derives the following expressions:
+%
+%
+\begin{equation}
+\label{eq:surv_prob_spec}
+S_v(a) =l- R(a) + R(0) e^{-\lambda a} - \int_{0}^{a} R'(u) e^{-\lambda(a-u)} du
+\end{equation}
+%
+and 
+%
+\begin{equation}
+\label{eq:surv_prob_deriv}
+S_v'(a) =- \lambda e^{-\lambda a} \left[ \int_{0}^{a} R'(u) e^{\lambda u} du + R(0)\right],
+\end{equation}
+%
+where $R(a)$ is the  
+\begin{quote}
+	``[\ldots] proportion of vaccinees without vaccine-induced immunity at age $a$.'' (p. 1015)
+\end{quote}
+Specifically, under vaccine failure mode A, according to which the vaccine initially fully immunizes the proportion $1 - R_0$, but that proportion decays at a rate $\rho$. Thus
+
+\begin{equation}
+\label{eq:Ra}
+R(a) = 1-(1-R_0) e^{-\rho a}
+\end{equation}
+%
+We point out two critical errors in the paper that force reevaluation of the results presented therein.
+%
+\section*{Comments}
+%
+\subsection*{Instantaneous risks $p(a)$ and probability densities $u(a)$ (equations (1) and (2)}
+Under an exponential model, 
+%
+\begin{equation}
+\label{eq:S_alt}
+S^\ast(a) = e^{-\lambda a}
+\end{equation}
+%
+and its derivative
+%
+\begin{equation}
+\label{eq:S_alt}
+S^\ast'(a) = - \lambda e^{-\lambda a}
+\end{equation}
+%
+Accordingly, 
+%
+%
+\begin{align}
+\nonumber
+p(a) =& - \frac{1}{S^\ast (a)} \:\frac{dS^\ast(a)}{da}\\
+\nonumber
+ =& - e^{\lambda a} \left(- \lambda e^{-\lambda a} \right)\\
+ \label{eq:inst_AR}
+ =& \lambda,
+\end{align}
+%
+which is the instantaneous attack rate. Similarly
+%
+\begin{align}
+\nonumber
+p(a) =& - \frac{dS^\ast(a)}{da}\\
+\label{eq:failure_pd}
+=& \lambda e^{-\lambda a},
+\end{align}
+%
+which is the exponential density with parameter $\lambda$. However, Farrington's equations (1) and (2) depend on exponential form of the survival probability and are not valid otherwise.
+%
+\subsection*{Survival probabilities $S(a)$ and their derivatives $S'(a)$ (Appendix A)}
+%
+Farrington defines $S_v(a)$ the probability of a vaccinated individual to remain uninfected by age $a$ (equation \eqref{eq:surv_prob_spec}). To calculate $p(a)$ and $u(a)$ for VE calculation, the derivative of \eqref{eq:surv_prob_spec} with respect is given. I have already pointed out the fact that, unless $S(a)$ has the exponential form \eqref{eq:S_alt}, these quantities cannot be used to compute $p(a)$ and $u(a)$. Nevertheless, let us look at the derivative of $S_v(a)$ given at the bottom of the first column of p. 1020 (equation \eqref{eq:surv_prob_deriv})
+
+\printbibliography
+%
+%
+%
+\end{document} 
+
