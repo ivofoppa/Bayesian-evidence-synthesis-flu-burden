@@ -1,0 +1,126 @@
+\documentclass{article}[12pt]
+\usepackage{amsmath,amssymb,authblk,bm,bm,caption,graphicx,hyperref,lscape,mathrsfs,setspace,subcaption,tabularx,tkz-graph,upgreek,url,amsthm}
+\usetikzlibrary{shapes.geometric}
+\usepackage[letterpaper, margin=2.5cm]{geometry}
+\usepackage[backend=biber,style=numeric,isbn=false,sorting=none,giveninits=true,terseinits=true]{biblatex}
+\DeclareNameAlias{default}{last-first}
+%\doublespacing
+\graphicspath{{graphics/}}
+\newcommand{\tablefolder}{./TCtables}
+\newcommand{\la}{\leftarrow}
+\newcommand{\ra}{\rightarrow}
+%\usepackage{draftwatermark}
+\newcommand{\footremember}[2]{%
+	\footnote{#2}
+	\newcounter{#1}
+	\setcounter{#1}{\value{footnote}}
+}
+\newcommand{\footrecall}[1]{%
+	\footnotemark[\value{#1}]%
+}
+
+\newcommand{\absdiv}[1]{%
+	\par\addvspace{.5\baselineskip}% adjust to suit
+	\noindent\textbf{#1}\quad\ignorespaces
+}
+
+\renewcommand*{\revsdnamepunct}{}
+
+\makeatletter
+\renewbibmacro*{name:last-first}[4]{%
+	\ifuseprefix
+	{\usebibmacro{name:delim}{#3#1}%
+		\usebibmacro{name:hook}{#3#1}%
+		\ifblank{#3}{}{%
+			\ifcapital
+			{\mkbibnameprefix{\MakeCapital{#3}}\isdot}
+			{\mkbibnameprefix{#3}\isdot}%
+			\ifpunctmark{'}{}{\bibnamedelimc}}%
+		\mkbibnamelast{#1}\isdot
+		\ifblank{#4}{}{\bibnamedelimd\mkbibnameaffix{#4}\isdot}%
+		%      \ifblank{#2}{}{\addcomma\bibnamedelimd\mkbibnamefirst{#2}\isdot}}% DELETED
+		\ifblank{#2}{}{\bibnamedelimd\mkbibnamefirst{#2}\isdot}}% NEW
+	{\usebibmacro{name:delim}{#1}%
+		\usebibmacro{name:hook}{#1}%
+		\mkbibnamelast{#1}\isdot
+		\ifblank{#4}{}{\bibnamedelimd\mkbibnameaffix{#4}\isdot}%
+		%      \ifblank{#2#3}{}{\addcomma}% DELETED
+		\ifblank{#2}{}{\bibnamedelimd\mkbibnamefirst{#2}\isdot}%
+		\ifblank{#3}{}{\bibnamedelimd\mkbibnameprefix{#3}\isdot}}}
+\makeatother
+
+
+%\SetWatermarkText{Confidential}
+%\SetWatermarkScale{5}
+% Sets the default location of pictures\fvset{fontsize=\normalsize} % The font size of all verbatim text can be changed here
+%
+\DeclareMathOperator{\logit}{logit}
+\DeclareMathOperator{\RR}{RR}
+\DeclareMathOperator{\OR}{OR}
+\DeclareMathOperator{\E}{E}
+%
+\addbibresource{waning.bib}
+\title{Calculus problem from Farrington, ``The Measurement and Interpretation of Age-Specific Vaccine Efficacy'' (1992)} 
+%
+\author{Ivo M Foppa}
+	%
+%
+%----------------------------------------------------------------------------------------
+\begin{document}
+%
+\maketitle%
+%
+%
+Let $R_0 \in [0,1] \subset  \mathbb{R}$ and $\rho,\lambda \in \mathbb{R}_{\ge 0}$.
+%
+Consider the following expression:
+%
+\begin{equation}
+\label{eq:conv_integral}
+F(a) = \int_{0}^{a} g(u) h(a-u) du,
+\end{equation}
+%
+where
+\begin{align}
+\label{eq:Ga}
+G(a) =& 1-(1-R_0) \;e^{-\rho a}\\
+\label{eq:Ga_deriv}
+G'(a)=&g(a) = \rho (1-R_0) \;e^{-\rho a}
+\end{align}
+%
+and 
+\begin{equation}
+\label{eq:h}
+h(b)=e^{-\lambda b}.
+\end{equation} 
+%
+\paragraph{Question}
+What is $F'(a) = \frac{dF}{da}$?
+%
+\paragraph{Proposed solutions}
+\begin{enumerate}
+	\item Using the fundamental theorem of calculus, 
+	%
+	\begin{equation*}
+	F'(a)= g(a) h(a-a) = g(a) h(0)
+	\end{equation*}
+	%
+	\item $F(a)$, on the other hand, is a convolution integral; therefore,
+	%
+	\begin{equation*}
+	F(a) = \int_{0}^{a} g(u) h(a-u) du = \int_{0}^{a} g(a-u) h(u) du.
+	\end{equation*} 
+	%
+	Using this in combination with the fundamental theorem of calculus gives 
+	%
+	\begin{equation*}
+	F'(a)= g(a-a) h(a) = g(0) h(a).
+	\end{equation*} 
+	%
+	Usually, however, $g(0) h(a) \neq g(a) h(0)$.
+	\item First evaluating $F(a)$ and then taking the derivative with respect to $a$ gives yet another result.
+\end{enumerate}
+%
+%
+\end{document} 
+

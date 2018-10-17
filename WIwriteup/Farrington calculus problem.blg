@@ -1,0 +1,9 @@
+[0] Config.pm:354> INFO - This is Biber 2.7
+[0] Config.pm:357> INFO - Logfile is 'Farrington calculus problem.blg'
+[38] biber-MSWIN64:303> INFO - === 
+[80] Biber.pm:359> INFO - Reading 'Farrington calculus problem.bcf'
+[190] Biber.pm:835> INFO - Found 0 citekeys in bib section 0
+[202] Utils.pm:164> WARN - The file 'Farrington calculus problem.bcf' does not contain any citations!
+[209] bbl.pm:608> INFO - Writing 'Farrington calculus problem.bbl' with encoding 'ascii'
+[209] bbl.pm:712> INFO - Output to Farrington calculus problem.bbl
+[214] Biber.pm:109> INFO - WARNINGS: 1
