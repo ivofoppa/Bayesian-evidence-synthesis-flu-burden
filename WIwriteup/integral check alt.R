@@ -45,11 +45,20 @@ Sprime <- function(a){
   -Rprime(a) -lambda*exp(-lambda*a) + Fprime(a)
 }
 
+Salt <- function(a){
+  R0*exp(-lambda*a) + F(a)
+}
+
+Saltprime <- function(a){
+  -lambda*exp(-lambda*a) + Fprime(a)
+}
+
 a <- 20
 -Sprime(a)/S(a) ### Instantanous risk in vaccinated at "age" 20, according to Farrington
+-Saltprime(a)/Salt(a) ### Instantanous risk in vaccinated at "age" 20, according to Farrington
 
 lambda*(R0*exp(-lambda*a) + F(a))
-
+F(0)
 
 
 
