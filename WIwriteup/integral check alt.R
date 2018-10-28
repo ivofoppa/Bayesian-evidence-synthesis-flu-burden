@@ -59,14 +59,11 @@ a <- 20
 
 lambda*(R0*exp(-lambda*a) + F(a))
 F(0)
+a <- 0
+iav <- lambda*(R0*exp(-a*lambda) + F(a))
+ianv <- lambda*exp(-a*lambda)
 
-
-
-
-
-
-
-
-
+1 - iav/ianv
+-Saltprime(a)/Salt(a)
 
 
