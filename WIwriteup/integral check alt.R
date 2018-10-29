@@ -66,4 +66,6 @@ ianv <- lambda*exp(-a*lambda)
 1 - iav/ianv
 -Saltprime(a)/Salt(a)
 
-
+als <- seq(0,500,.1) 
+VEls <- sapply(als, function(a) 1 - (R0*exp(-a*lambda) + F(a))/exp(-a*lambda))
+plot(VEls,type = 'l')
