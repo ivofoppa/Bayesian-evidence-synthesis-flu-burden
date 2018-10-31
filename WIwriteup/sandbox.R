@@ -1,42 +1,11 @@
-ls <- seq(0,200)
-arr <- NULL
-
-for (n in ls){
-  for (m in ls){
-    arr <- rbind(arr,c(n,m),deparse.level = 0)
-  }
-}
-
-lambda1 <- 50; lambda2 <- 60
-
-# lsa <- sapply(seq_along(arr[,1]),function(k) arr[k,1]*dpois(arr[k,1],lambda1)*dpois(arr[k,2],lambda2))
-
-lsa <- sapply(seq_along(arr[,1]),function(k) 1/arr[k,2]*dpois(arr[k,1],lambda1)*dpois(arr[k,2],lambda2))
-
-
-lsb <- sapply(seq_along(arr[,1]),function(k) arr[k,1]/arr[k,2]*dpois(arr[k,1],lambda1)*dpois(arr[k,2],lambda2))
-
-delta <- 0.0001
-lsc <- sapply(seq_along(arr[,1]),function(k) (arr[k,1] + delta)/(arr[k,2] + delta)*dpois(arr[k,1],lambda1)*dpois(arr[k,2],lambda2))
-
-delind <- which(arr[,2]==0)
-sum(lsa[-delind])
-sum(lsc[-delind])
-
-1/lambda2
-1/(lambda2/(1 - exp(-lambda2)))
-
-dpois(100,lambda)
-
+###################################################################################################
+###################################################################################################
 Npop <- 1e+6
 
 vacc <- .4
+phi <- .6
 csfrac <- 0.001 ### case sampling fraction
 cnfrac <- csfrac*.1
-
-nsim <- 1000000
-N1 <- rbinom(nsim,Npop,vacc)
-N0 <- Npop - N1
 
 lambda0 <- -log(0.85) ### 15% seasonal attack rate
 
@@ -46,14 +15,66 @@ lambdat0 <- dnorm(xls)
 lambdat0 <- lambdat0 - min(lambdat0)
 lambdat0 <- lambdat0/sum(lambdat0)*lambda0
 
-casetimels0 <- NULL
-N0 <- N0[100]
-for (k in seq_along(lambdat0)){
-  pinf <- 1 - exp(-lambdat0[k])
-  ct <- rbinom(1,N0,pinf)
-  casetimels0 <- c(casetimels0,ct)
-  N0 <- N0 - ct
+lambdat1 <- lambdat0*(1-phi)
+
+
+nsim <- 10000
+VEpopls <- NULL
+
+for (Npop in rev(seq(50,2000,50))){ ### pom: "population order of magnitude"
+  
+  VEls <- NULL
+  sim <- 0
+  while (sim < nsim){
+    casetimels0 <- NULL
+    N00 <- rbinom(1,Npop,vacc)
+    N0 <- N00
+    
+    for (k in seq_along(lambdat0)){
+      pinf <- 1 - exp(-lambdat0[k])
+      ct <- rbinom(1,N0,pinf)
+      casetimels0 <- c(casetimels0,ct)
+      N0 <- N0 - ct
+    }
+    
+    pt0_atrisk <- N0*length(xls) + sum(sapply(seq_along(casetimels0), function(t) casetimels0[t]*t))
+    
+    casetimels1 <- NULL
+    N1 <- Npop - N00
+    
+    for (k in seq_along(lambdat1)){
+      pinf <- 1 - exp(-lambdat1[k])
+      ct <- rbinom(1,N1,pinf)
+      casetimels1 <- c(casetimels1,ct)
+      N1 <- N1 - ct
+    }
+    
+    pt1_atrisk <- N1*length(xls) + sum(sapply(seq_along(casetimels1), function(t) casetimels1[t]*t))
+    
+    VEel <- 1 - sum(casetimels1)/pt1_atrisk/(sum(casetimels0)/pt0_atrisk)
+    
+    if (VEel!=-Inf){
+      VEls <- c(VEls,VEel)
+    }
+    
+    sim <- sim + 1
+  }
+  
+  VEpopls <- c(VEpopls,mean(VEls[which(VEls!=Inf & VEls!=-Inf)]),ylab='Mean(VE estimate)',xlab = 'Source pop.')
+  cat(paste0('Npop=',Npop,'\n'))
 }
+
+save(VEpopls, lambdat0, file = 'VEpopls.RData')
+
+plot(tail(rev(seq(50,2000,50)),-1),VEpopls, type = 'l', ylim = c(.4,.65),ylab='Mean(VE estimate)',xlab = 'Source pop.')
+lines(tail(rev(seq(50,2000,50)),-1),rep(.6,length(seq(50,2000,50)[-1])),col = 'red')
+
+
+lambda0*(1-phi)/150
+
+nsim <- 1000000
+N1 <- rbinom(nsim,Npop,vacc)
+N0 <- Npop - N1
 
 phi <- .6 ### VE
 lambda1 <- lambda0*(1-phi)
