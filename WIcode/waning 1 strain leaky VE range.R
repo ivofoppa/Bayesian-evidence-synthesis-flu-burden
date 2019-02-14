@@ -45,7 +45,7 @@ for (k in seq_along(VErnge)){
       
       dyv <- beta*(1-phi)*xv*(yv + ynv) - yv*gamma
       dynv <- beta*xnv*(yv + ynv) - ynv*gamma
-
+      
       dzv <- yv*gamma
       dznv <- ynv*gamma
       

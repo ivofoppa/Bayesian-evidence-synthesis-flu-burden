@@ -128,9 +128,9 @@ colnames(studydata1) <- colnames(studydata2) <- c('day','case','vacc','count')
 logist1 <- glm(case ~ vacc,weights = count, data = studydata1,family = binomial())
 logist2 <- glm(case ~ vacc,weights = count, data = studydata2,family = binomial())
 
-c1 <- sum(studydata0$count[which(studydata0$case==1 & studydata0$vacc==1)])
-c0 <- sum(studydata0$count[which(studydata0$case==1 & studydata0$vacc==0)])
+c1 <- sum(studydata1$count[which(studydata1$case==1 & studydata1$vacc==1)])
+c2 <- sum(studydata2$count[which(studydata2$case==1 & studydata2$vacc==0)])
 
-1 - c1/Svinit/(c0/Snvinit)
+1 - c1/Svinit/(c2/Snvinit)
 1-exp(logist1$coefficients[2])
 1-exp(logist2$coefficients[2])

@@ -51,7 +51,8 @@ KKmod <- function(t, state, parameters) {
 state <- c(xv=xv0,xnv=xnv0,ynv1=ynv10,ynv2=ynv20,yv1=yv10,
            ynv1new=0,ynv2new=0,yv1new=0,z=z0)
 
-times <- seq(0, 300, by = 0.01)
+seas <- 300
+times <- seq(0, seas, by = 0.01)
 
 out <- data.frame(ode(y = state, times = times, func = KKmod, parms = parameters))
 
